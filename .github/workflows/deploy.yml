@@ -54,7 +54,7 @@ jobs:
 
     defaults:
       run:
-          working-directory: client
+          working-directory: ./client
 
     steps:
       - name: Deploy to production environment
