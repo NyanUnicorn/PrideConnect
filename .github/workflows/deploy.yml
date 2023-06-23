@@ -9,21 +9,21 @@ jobs:
   build-server:
     runs-on: ubuntu-latest
 
-
-
     steps:
-      - name: Change working directory
-        run: cd server
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          path: server
       - name: Cache Go modules
         uses: actions/setup-go@v4
         with:
           go-version-file: 'server/go.mod'
       # - name: Build mod
       #   run: go mod init "/home/runner/work/PrideConnect/PrideConnect"
+      - name: Test
+        run: go test
       - name: Build
-        run: go build -o dist/server .
+        run: go build -o ./dist/server
 
       # - name: Run tests
       #   run: go test -v ./...
@@ -32,11 +32,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Change working directory
-        run: cd client
       - name: Checkout code
         uses: actions/checkout@v3
-
+        with:
+          path: client
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
