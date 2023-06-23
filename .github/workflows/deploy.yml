@@ -1,9 +1,9 @@
 name: GoLang CI/CD
 
 on:
-  push:
+  pull_request:
     branches:
-      - adam/gha-server
+      - main
 
 jobs:
   build-server:
