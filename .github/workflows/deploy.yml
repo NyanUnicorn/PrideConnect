@@ -39,9 +39,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.3.0'
-      - name: Set working directory to 'my-folder'
+      - name: Set working directory to 'client'
         run: cd client
-        working-directory: ${{ github.workspace }}
       - name: Show directory
         run: ls
       - run: npm i
