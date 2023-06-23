@@ -1,39 +1,53 @@
 name: GoLang CI/CD
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
 
 jobs:
-  build:
+  build-server:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/checkout@v3
+      
+      - name: Cache Go modules
+        uses: actions/setup-go@v4
         with:
-          go-version: '1.20.5'
+          go-version-file: 'server/go.mod'
 
       - name: Build
-        run: go build -v ./...
+        run: go build -o dist/server .
 
       # - name: Run tests
       #   run: go test -v ./...
 
-  deploy:
-    needs: build
+  build-client:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy to production environment
-        run: npx sst deploy --stage prod
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.3.0'
+
+      - run: npm ci
+      - run: npm test
+
+      # - name: Run tests
+      #   run: go test -v ./...    
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Deploy to production environment
+  #       run: npx sst deploy --stage prod
           # Add your deployment script or commands here
           # echo "Deploying to staging environment"
           # Example: Deploy to a cloud platform like AWS or Heroku
