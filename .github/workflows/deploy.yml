@@ -41,11 +41,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.3.0'
-      - name: Set working directory to 'client'
-        run: cd client
-      - name: Show directory
-        run: ls
-      - run: npm install
+      - run: npm ci
       - run: npm test
 
       # - name: Run tests
