@@ -52,10 +52,6 @@ jobs:
     needs: build-client
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-          working-directory: client
-
     steps:
       - name: Deploy to production environment
         run: sst deploy --stage prod
