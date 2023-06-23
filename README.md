@@ -32,19 +32,18 @@ PrideConnect is a project aimed at creating an online platform for connecting an
 
 2. Change into the project directory:
 
-  ```
+  ```shell
   cd prideconnect
   ```
 
 3. Install the dependencies:
 
-  ```
+  ```shell
   npm install
 
   ```
 
 4. Set up the environment variables:
-
    - Create a `.env` file in the project root directory.
    - Add the required environment variables with their respective values.
 
@@ -92,7 +91,3 @@ Contributions to PrideConnect are welcome! If you encounter any issues or have s
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
-```
-
-Feel free to customize and modify the template as per your project's specific requirements.
