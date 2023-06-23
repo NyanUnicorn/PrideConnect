@@ -1,19 +1,21 @@
 name: GoLang CI/CD
 
 on:
-  push:
+  pull_request:
     branches:
-      - dev
+      - main
 
 jobs:
   build-server:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: server
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          path: server
       - name: Cache Go modules
         uses: actions/setup-go@v4
         with:
