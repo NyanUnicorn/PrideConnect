@@ -52,9 +52,9 @@ jobs:
     needs: build-client
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-          working-directory: ../client
+    # defaults:
+    #   run:
+    #       working-directory: client
 
     steps:
       - name: Deploy to production environment
