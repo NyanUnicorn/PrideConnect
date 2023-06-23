@@ -52,13 +52,15 @@ jobs:
     needs: build-client
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-          working-directory: ./client
+    # defaults:
+    #   run:
+    #       working-directory: ./client
 
     steps:
       - name: Deploy to production environment
-        run: npm run deploy
+        run: |
+          cd client
+          npm run deploy
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
