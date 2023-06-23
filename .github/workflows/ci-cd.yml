@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   build:
@@ -27,13 +24,13 @@ jobs:
       # - name: Run tests
       #   run: go test -v ./...
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Deploy to production environment
-        run: npx sst deploy --stage prod
+  #   steps:
+  #     - name: Deploy to production environment
+  #       run: npx sst deploy --stage prod
           # Add your deployment script or commands here
           # echo "Deploying to staging environment"
           # Example: Deploy to a cloud platform like AWS or Heroku
