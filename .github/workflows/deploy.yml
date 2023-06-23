@@ -52,14 +52,18 @@ jobs:
     needs: build-client
     runs-on: ubuntu-latest
 
-    # defaults:
-    #   run:
-    #       working-directory: client
+    defaults:
+      run:
+          working-directory: client
 
     steps:
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.3.0'
       - name: Deploy to production environment
         run: |
-          ls
+          npm i
           npm run deploy
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
