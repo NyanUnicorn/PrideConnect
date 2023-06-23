@@ -3,11 +3,15 @@ name: GoLang CI/CD
 on:
   push:
     branches:
-      - dev
+      - adam/gha-server
 
 jobs:
   build-server:
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: server
 
     steps:
       - name: Checkout code
