@@ -60,6 +60,10 @@ jobs:
     needs: build-client
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: server
+        
     steps:
       - name: Deploy to production environment
         run: npx sst deploy --stage prod
