@@ -3,7 +3,7 @@ name: GoLang CI/CD
 on:
   push:
     branches:
-      - main
+      - adam/gha-cache-npm
 
 jobs:
   build-server:
@@ -41,11 +41,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v3
+        with:
+          path: .npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('client/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '20.3.0'
-      - run: npm ci
+      - run: npm i --cache .npm --prefer-offline
       - run: npm test 
 
   deploy:
