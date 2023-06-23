@@ -49,7 +49,7 @@ jobs:
       # - run: npm test 
 
   deploy:
-    needs: build-client
+    # needs: build-client
     runs-on: ubuntu-latest
 
     defaults:
