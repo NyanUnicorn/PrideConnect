@@ -54,7 +54,7 @@ jobs:
       - run: npm i --cache .npm --prefer-offline
       # - run: npm test 
       - name: Deploy to production environment
-        run: npm sst deploy --stage prod
+        run: npx sst deploy --stage prod
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
