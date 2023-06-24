@@ -1,8 +1,6 @@
-import { FC } from "react";
-
-const Navbar: FC = () => {
+const Navbar = () => {
   return (
-    <nav className="">
+    <nav className="navbar-container">
       <>I, Navbar</>
     </nav>
   );
