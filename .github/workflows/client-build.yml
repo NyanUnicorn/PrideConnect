@@ -12,8 +12,8 @@ jobs:
     defaults:
       run:
           working-directory: client
-    # environment: 
-    #   name: production
+    environment: 
+      name: production
            
     steps:
       - name: Checkout code
@@ -33,7 +33,7 @@ jobs:
           node-version: '20.3.0'
       - run: npm i --cache .npm --prefer-offline
       # - run: npm test 
-      - name: Archive production build
+      - name: SST Build Client
         run: npx sst build
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
