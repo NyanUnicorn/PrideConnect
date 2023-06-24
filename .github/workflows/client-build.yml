@@ -47,7 +47,8 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: |
-            .sst/dist
+            client/.sst/dist
+            client/.next
           key: ${{ runner.os }}-sst-build-${{ hashFiles('client/.sst/**') }}
 
       - name: SST Build Client
@@ -61,7 +62,8 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: |
-            .sst/dist
+            client/.sst/dist
+            client/.next
           key: ${{ runner.OS }}-sst-build-${{ hashFiles('client/.sst/**') }}
 
   sst-deploy-client:
