@@ -1,4 +1,5 @@
 name: Client SST-Deploy
+
 on:
   push:
     branches:
@@ -30,8 +31,8 @@ jobs:
       - name: Restore NPM dependencies
         uses: actions/cache/restore@v3
         with:
-          path: .npm
-          key: ${{ runner.OS }}-node-${{ hashFiles('client/package-lock.json') }}
+          path: client/node_modules
+          key: ${{ runner.OS }}-node-
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -40,7 +41,14 @@ jobs:
       - run: npm install
       # - run: npm test 
       - name: Deploy to production environment
-        run: npx sst deploy --stage production --yes
+        run: npx sst deploy --stage prod --yes
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Cache Build Artifacts
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            client/.sst/dist
+            client/.next
+          key: ${{ runner.OS }}-sst-build-${{ hashFiles('client/.sst/**') }}
