@@ -1,0 +1,46 @@
+name: Client SST-Deploy
+on:
+  push:
+    branches:
+      - 'adam/gha-artifact'
+
+jobs:
+  sst-deploy-client:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+          working-directory: client
+    # environment: 
+    #   name: production
+           
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          sparse-checkout: |
+            client
+      - uses: actions/cache/restore@v3
+        with:
+          path: |
+            client/.sst/dist
+            client/.next
+          key: ${{ runner.OS }}-sst-build-
+
+      - name: Restore NPM dependencies
+        uses: actions/cache/restore@v3
+        with:
+          path: .npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('client/package-lock.json') }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.3.0'
+      - run: npm install
+      # - run: npm test 
+      - name: Deploy to production environment
+        run: npx sst deploy --stage dev --yes
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
