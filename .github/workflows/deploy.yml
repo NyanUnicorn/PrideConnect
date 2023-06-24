@@ -32,8 +32,8 @@ jobs:
     defaults:
       run:
           working-directory: client
-    environment: 
-      name: production
+    # environment: 
+      # name: production
            
     steps:
       - name: Checkout code
