@@ -29,6 +29,7 @@ jobs:
 
       # Restore only if the lockfile has not changed
       - name: Restore NPM dependencies
+        id: npm-restore
         uses: actions/cache/restore@v3
         with:
           path: client/node_modules
@@ -42,9 +43,10 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: client/node_modules
-          key: ${{ runner.OS }}-node-${{ hashFiles('client/package-lock.json') }}
+          key: ${{ steps.npm-restore.outputs.cache-primary-key }}
 
       - name: Restore Build Artifacts
+        id: restore-build-artifacts
         uses: actions/cache/restore@v3
         with:
           path: |
@@ -66,7 +68,7 @@ jobs:
           path: |
             client/.sst/dist
             client/.next
-          key: ${{ runner.OS }}-sst-build-${{ hashFiles('client/.sst/**') }}
+          key: ${{ steps.restore-build-artifacts.outputs.cache-primary-key }}
 
   sst-deploy-client:
     runs-on: ubuntu-latest
