@@ -1,0 +1,71 @@
+name: Client SST-Build
+
+on:
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  sst-build-client:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+          working-directory: client
+    environment: 
+      name: production
+           
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          sparse-checkout: |
+            client
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.3.0'
+
+      # Restore only if the lockfile has not changed
+      - name: Restore NPM dependencies
+        id: npm-restore
+        uses: actions/cache/restore@v3
+        with:
+          path: client/node_modules
+          key: ${{ runner.OS }}-node-${{ hashFiles('client/package-lock.json') }}
+
+      - run: npm install
+
+      # Cache only if the lockfile has changed
+      - name: Save NPM dependencies
+        if:  ${{ steps.npm-restore.outputs.cache-primary-key }}.cache-hit != 'true'
+        uses: actions/cache/save@v3
+        with:
+          path: client/node_modules
+          key: ${{ steps.npm-restore.outputs.cache-primary-key }}
+
+      - name: Restore Build Artifacts
+        id: restore-build-artifacts
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            client/.sst
+            client/.next
+          key: ${{ runner.os }}-sst-build-${{ hashFiles('client/.sst/**') }}
+
+      - name: SST Build Client
+        run: npx sst build --stage dev
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+
+      - name: Cache Build Artifacts
+        if: ${{ steps.restore-build-artifacts.outputs.cache-primary-key }}.cache-hit != 'true'
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            client/.sst/dist
+            client/.next
+          key: ${{ steps.restore-build-artifacts.outputs.cache-primary-key }}
