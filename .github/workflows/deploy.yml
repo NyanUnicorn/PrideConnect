@@ -21,15 +21,10 @@ jobs:
         with:
           go-version: "1.20.5"
           check-latest: true
-      # - name: Build mod
-      #   run: go mod init "/home/runner/work/PrideConnect/PrideConnect"
       - name: Test
         run: go test
       - name: Build
         run: go build -o ./dist/server
-
-      # - name: Run tests
-      #   run: go test -v ./...
 
   build-client:
     runs-on: ubuntu-latest
@@ -49,6 +44,7 @@ jobs:
           key: ${{ runner.OS }}-node-${{ hashFiles('client/package-lock.json') }}
           restore-keys: |
             ${{ runner.OS }}-node-
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -70,17 +66,3 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          # Add your deployment script or commands here
-          # echo "Deploying to staging environment"
-          # Example: Deploy to a cloud platform like AWS or Heroku
-
-  # deploy_production:
-  #   needs: deploy
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: Deploy to production environment
-  #       run: |
-  #         # Add your deployment script or commands here
-  #         echo "Deploying to production environment"
-  #         # Example: Deploy to a cloud platform like AWS or Heroku
