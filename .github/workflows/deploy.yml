@@ -3,7 +3,7 @@ name: GoLang CI/CD
 on:
   push:
     branches:
-      - adam/gha-cache-npm
+      - adam/gha-artifact-build-client
 
 jobs:
   build-server:
@@ -52,7 +52,13 @@ jobs:
       - run: npm i --cache .npm --prefer-offline
       # - run: npm test 
 
-  deploy:
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: client-build
+          path: client
+
+  deploy-client:
     needs: build-client
     runs-on: ubuntu-latest
 
@@ -61,6 +67,11 @@ jobs:
         working-directory: server
 
     steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: client-build
+          path: client
       - name: Deploy to production environment
         run: npm sst deploy --stage prod
         env:
