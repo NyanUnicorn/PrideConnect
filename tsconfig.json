@@ -7,7 +7,7 @@
       "esnext"
     ],
     "allowJs": true,
-    "implicitAny": false,
+    "noImplicitAny": false,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -34,7 +34,8 @@
     "client/next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "client/.next/types/**/*.ts"
+    "client/.next/types/**/*.ts",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
