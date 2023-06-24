@@ -26,7 +26,7 @@ jobs:
       - name: Build
         run: go build -o ./dist/server
 
-  build-client:
+  sst-deploy-client:
     runs-on: ubuntu-latest
 
     defaults:
@@ -51,27 +51,6 @@ jobs:
           node-version: '20.3.0'
       - run: npm i --cache .npm --prefer-offline
       # - run: npm test 
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: client-build
-          path: client
-
-  deploy-client:
-    needs: build-client
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: server
-
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: client-build
-          path: client
       - name: Deploy to production environment
         run: npm sst deploy --stage prod
         env:
