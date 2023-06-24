@@ -19,30 +19,49 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Cache NPM dependencies
-        uses: actions/cache@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.3.0'
+          cache: 'npm'
+          cache-dependency-path: client/package-lock.json
+
+      - name: Restore NPM dependencies
+        uses: actions/cache/restore@v3
         with:
           path: .npm
           key: ${{ runner.OS }}-node-${{ hashFiles('client/package-lock.json') }}
           restore-keys: |
             ${{ runner.OS }}-node-
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.3.0'
       - run: npm i --cache .npm --prefer-offline
-      # - run: npm test 
-      - name: SST Build Client
-        run: npx sst build
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+
+      - name: Save NPM dependencies
+        uses: actions/cache/save@v3
         with:
-          name: sst-build
+          path: .npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('client/package-lock.json') }}
+
+      - name: Restore Build Artifacts
+        uses: actions/cache/restore@v3
+        with:
           path: |
-            .sst/**/*
-            package.json
-            package-lock.json
+            .sst
+            .next
+            .open-next
+          key: ${{ runner.os }}-sst-build-${{ hashFiles('client/.sst/**') }}
+
+      - name: SST Build Client
+        run: npx sst build --stage dev
+
+      - name: Cache Build Artifacts
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            .sst
+            .next
+            .open-next
+          key: ${{ runner.OS }}-sst-build-${{ hashFiles('client/.sst/**') }}
 
   sst-deploy-client:
     runs-on: ubuntu-latest
