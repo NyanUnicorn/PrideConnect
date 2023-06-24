@@ -1,9 +1,9 @@
 name: Client SST-Deploy
 
 on:
-  push:
+  pull_request:
     branches:
-      - 'adam/gha-artifact'
+      - 'main'
 
 jobs:
   sst-deploy-client:
