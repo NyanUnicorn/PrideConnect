@@ -1,4 +1,4 @@
-name: Client SST Build CI/CD
+name: Client SST-Build
 
 on:
   pull_request:
