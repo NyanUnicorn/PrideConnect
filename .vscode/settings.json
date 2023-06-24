@@ -1,0 +1,6 @@
+{
+  "eslint.nodePath": "./client/node_modules",
+  "eslint.options": {
+    "overrideConfigFile": "./client/.eslintrc.yml"
+  },
+}
