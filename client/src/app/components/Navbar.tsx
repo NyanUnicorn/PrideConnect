@@ -2,7 +2,9 @@ import { FC } from "react";
 
 const Navbar: FC = () => {
   return (
-    <>I, Navbar</>
+    <nav className="">
+      <>I, Navbar</>
+    </nav>
   );
 };
 
