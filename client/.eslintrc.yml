@@ -1,0 +1,18 @@
+root: true
+env:
+  node: true
+  es6: true
+  browser: true
+extends:
+  - airbnb
+  - airbnb-typescript
+  - plugin:@next/next/recommended
+  - "next/core-web-vitals"
+overrides:
+  - files:
+      - "*.ts"
+      - "*.tsx"
+    parserOptions:
+      project: ["./client/tsconfig.json"]
+rules:
+  no-html-link-for-pages: 0
