@@ -11,8 +11,8 @@ jobs:
     defaults:
       run:
           working-directory: client
-    # environment: 
-    #   name: production
+    environment: 
+      name: production
            
     steps:
       - name: Checkout code
@@ -40,7 +40,7 @@ jobs:
       - run: npm install
       # - run: npm test 
       - name: Deploy to production environment
-        run: npx sst deploy --stage dev --yes
+        run: npx sst deploy --stage production --yes
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
