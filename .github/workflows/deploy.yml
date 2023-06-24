@@ -1,9 +1,9 @@
 name: GoLang CI/CD
 
 on:
-  push:
+  pull_request:
     branches:
-      - adam/gha-artifact-build-client
+      - dev
 
 jobs:
   build-server:
@@ -32,8 +32,8 @@ jobs:
     defaults:
       run:
           working-directory: client
-    # environment: 
-      # name: production
+    environment: 
+      name: production
            
     steps:
       - name: Checkout code
