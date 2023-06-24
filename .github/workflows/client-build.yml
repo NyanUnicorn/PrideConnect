@@ -27,17 +27,18 @@ jobs:
         with:
           node-version: '20.3.0'
 
+      # Restore only if the lockfile has not changed
       - name: Restore NPM dependencies
         uses: actions/cache/restore@v3
         with:
           path: client/node_modules
-          key: ${{ runner.OS }}-node-${{ hashFiles('client/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
+          key: ${{ runner.OS }}-node-{{ hashFiles('client/package-lock.json') }}}
 
       - run: npm install
 
+      # Cache only if the lockfile has changed
       - name: Save NPM dependencies
+        if: ${{ runner.os }}-node-${{ hashFiles('client/package-lock.json') }}.cache-hit != 'true'
         uses: actions/cache/save@v3
         with:
           path: client/node_modules
@@ -59,6 +60,7 @@ jobs:
 
 
       - name: Cache Build Artifacts
+        if: ${{ runner.os }}-sst-build-${{ hashFiles('client/.sst/**') }}.cache-hit != 'true'
         uses: actions/cache/save@v3
         with:
           path: |
