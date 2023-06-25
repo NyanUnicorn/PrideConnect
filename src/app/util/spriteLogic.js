@@ -7,9 +7,10 @@ let beginY = 96;
 let frameOffset = 1017;
 
 let playerImageIdOffsetX = [0, 110];
+let playerImageIdOffsetY = [0, 0];
 
-let playerLeftOffsetX = [[0, -3, 0, 10], [-5, 3, 0, -6]];
-let playerLeftOffsetY = [[0, -5, -5, -5], [0, -8, 0, -2]];
+let playerLeftOffsetX = [[0, -3, 0, 10], [-5, 6, 0, -6], [0, 0, 0, 0]];
+let playerLeftOffsetY = [[0, -5, -5, -5], [0, -8, 0, -2], [0, 0, 0, 0]];
 
 const playerImage = new Image();
 playerImage.src = "/sprites-sheet.png";
@@ -48,7 +49,7 @@ const drawPlayer = (context, canvas, playerImageId, dir, currentFrame, x, y, wid
     horizontalFrameOffset = playerLeftOffsetX[playerImageId][currentFrame];
     verticalFrameOffset = playerLeftOffsetY[playerImageId][currentFrame]
   }
-  context.drawImage(playerImage, beginX + frameOffset * currentFrame + horizontalOffset + horizontalFrameOffset + playerImageIdOffsetX[playerImageId], beginY + verticalFrameOffset, frameWidth, frameHeight, x, y, width, height); 
+  context.drawImage(playerImage, beginX + frameOffset * currentFrame + horizontalOffset + horizontalFrameOffset + playerImageIdOffsetX[playerImageId % 2], beginY + verticalFrameOffset + playerImageIdOffsetY[playerImageId % 5], frameWidth, frameHeight, x, y, width, height); 
 };
 
 export { drawPlayer };
