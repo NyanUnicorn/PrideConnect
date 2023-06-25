@@ -1,5 +1,5 @@
 // Define the size of a frame
-let frameWidth = 65;
+let frameWidth = 67;
 let frameHeight = 97;
 let beginX = 147;
 let beginY = 96;
@@ -36,10 +36,10 @@ const drawPlayer = (context, canvas, playerImageId, dir, currentFrame, x, y, wid
       horizontalOffset = 0;
       break;
     case 'up':
-      verticalOffset = 0;
+      horizontalOffset = 549;
       break;
     case 'down':
-      verticalOffset = 0;
+      horizontalOffset = 277;
       break;
   }
   if(dir === 'left') {
@@ -66,8 +66,8 @@ const drawPlayer = (context, canvas, playerImageId, dir, currentFrame, x, y, wid
     case 0:
       context.drawImage(playerImage, beginX + frameOffset * currentFrame + horizontalOffset + horizontalFrameOffset, beginY + verticalFrameOffset, frameWidth, frameHeight, x, y, width, height);
       break;
-    case 1:
-      context.drawImage(playerImage, beginX + frameOffset * currentFrame, beginY, frameWidth, frameHeight, x, y, width, height);
+    case 0:
+      context.drawImage(playerImage, beginX + frameOffset * currentFrame + horizontalOffset + horizontalFrameOffset, beginY + verticalFrameOffset, frameWidth, frameHeight, x, y, width, height);
       break;
   }
   
