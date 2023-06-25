@@ -1,5 +1,6 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
+import { NextApiRequest, NextApiResponse } from "next";
+import { PrismaClient } from "@prisma/client";
+import { z } from "zod";
 
 const prisma = new PrismaClient();
 
@@ -13,11 +14,11 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
     res.status(201).json({
-      message: 'User created successfully',
+      message: "User created successfully",
       newUser,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error creating user' });
+    res.status(500).json({ message: "Error creating user" });
   }
 };
 
@@ -32,7 +33,7 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
       if (user) {
         res.status(200).json({ user });
       } else {
-        res.status(404).json({ message: 'User not found' });
+        res.status(404).json({ message: "User not found" });
       }
     } catch (error) {
       res.status(500).json({ message: `Error fetching user for ${email}` });
@@ -43,7 +44,7 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     const users = await prisma.user.findMany();
     res.status(200).json({ users });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching users' });
+    res.status(500).json({ message: "Error fetching users" });
   }
 };
 
@@ -53,17 +54,23 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
  */
 const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id, name, email } = req.query;
+  const schema = z.object({
+    id: z.string(),
+    name: z.string().optional(),
+    email: z.string().email().optional(),
+  });
+
   try {
     const updatedUser = await prisma.user.update({
       where: { id: Number(id) },
       data: {
-        name,
-        email,
+        name: schema.parse(name) !== undefined ? String(name) : undefined,
+        email: schema.parse(email) !== undefined ? String(email) : undefined,
       },
     });
-    res.status(200).json({ message: 'User updated successfully', updatedUser });
+    res.status(200).json({ message: "User updated successfully", updatedUser });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating user' });
+    res.status(500).json({ message: "Error updating user" });
   }
 };
 
@@ -73,28 +80,28 @@ const DELETE = async (req: NextApiRequest, res: NextApiResponse) => {
     const deletedUser = await prisma.user.delete({
       where: { id: Number(id) },
     });
-    res.status(200).json({ message: 'User deleted successfully', deletedUser });
+    res.status(200).json({ message: "User deleted successfully", deletedUser });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting user' });
+    res.status(500).json({ message: "Error deleting user" });
   }
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
-    case 'POST':
+    case "POST":
       await POST(req, res);
       break;
-    case 'GET':
+    case "GET":
       await GET(req, res);
       break;
-    case 'PUT':
+    case "PUT":
       await PUT(req, res);
       break;
-    case 'DELETE':
+    case "DELETE":
       await DELETE(req, res);
       break;
     default:
-      res.status(405).json({ message: 'Method not allowed' });
+      res.status(405).json({ message: "Method not allowed" });
   }
 };
 
