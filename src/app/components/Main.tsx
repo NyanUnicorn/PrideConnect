@@ -7,7 +7,7 @@ import Game from './Game';
 export default function Main() {
   const { data: session } = useSession();
   return (
-    <div>
+    <div className="flex justify-center items-center">
       {!session ? <Login /> : <Game />}
     </div>
   );
