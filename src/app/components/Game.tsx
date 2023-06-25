@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { playerImage } from '../util/spriteLogic';
 
 export default function Game() {
   const canvasRef = useRef(null);
@@ -7,18 +8,14 @@ export default function Game() {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
 
+   
+
     // Drawing and game logic here
     const player = {
       x: canvas.width / 10,
       y: canvas.height / 10,
-      speed: 50
+      speed: 10
     };
-
-    const playerImage = new Image();
-    playerImage.src = "/pika-pix.gif";
-
-    const background = new Image();
-    background.src = "/grass.png";
 
     const handleKeyDown = (event) => {
       const { key } = event;
@@ -34,19 +31,27 @@ export default function Game() {
       }
     };
 
-    const drawPlayer = () => {
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      if(background.complete) { // Ensure the image has been loaded
-        context.drawImage(background, 0, 0, canvas.width, canvas.height);
-      }
-      context.drawImage(playerImage, player.x, player.y, 50, 50);
-    };
-
     window.addEventListener('keydown', handleKeyDown);
-    
+
+    // game loop
+    // The sprite image frame starts from 0
+    let currentFrame = 0;
     const gameLoop = setInterval(() => {
-      drawPlayer();
-    }, 1000 / 600);
+      // Pick a new frame
+      // currentFrame++;
+
+      // // Make the frames loop
+      // let maxFrame = numColumns * numRows - 1;
+      // if (currentFrame > maxFrame){
+      //     currentFrame = 0;
+      // }
+
+      // Update rows and columns
+      // let column = currentFrame % numColumns;
+      // let row = Math.floor(currentFrame / numColumns);
+      
+      // drawPlayer(playerImage, 10, 30, frameWidth, frameHeight);
+    }, 1000 / 60);
 
     return () => {
       // Clean up or remove event listeners if needed
@@ -54,7 +59,7 @@ export default function Game() {
       clearInterval(gameLoop);
     };
   }, []);
- 
+
   return (
     <div>
       <canvas className="w-full h-full bg-white mt-[-25px]" ref={canvasRef} width={1000} height={800} />
