@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "allowJs": true,
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
@@ -17,7 +19,8 @@
     "noImplicitAny": true,
     "paths": {
       "@/*": [
-        "./src/*"
+        "src/app/*",
+        "src/pages/*"
       ]
     },
     "plugins": [
@@ -26,7 +29,12 @@
       }
     ],
     "typeRoots": [
-      "node_modules/@types"
+      "node_modules/@types",
+    ],
+    "types": [
+      "node",
+      "react",
+      "react-dom",
     ],
     "resolveJsonModule": true,
     "removeComments": true,

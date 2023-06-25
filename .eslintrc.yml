@@ -10,11 +10,10 @@ extends:
   - plugin:@next/next/recommended
   - prettier
 overrides:
-  - files:
-      - "*.ts"
-      - "*.tsx"
+  - files: "**/*.+(ts|tsx)"
     parserOptions:
-      project: ["tsconfig.json"]
+      project: "./tsconfig.json"
+      tsconfigRootDir: "./"
 rules:
   no-html-link-for-pages: 0
   import/prefer-default-export: 0
