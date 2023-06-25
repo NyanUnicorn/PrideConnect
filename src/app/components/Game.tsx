@@ -2,17 +2,12 @@ import { useEffect, useRef } from 'react';
 
 export default function Game() {
   const canvasRef = useRef(null);
+  
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
 
     // Drawing and game logic here
-    const background = new Image();
-    background.src = "/logo.png";
-    background.onload = function() {
-      context.drawImage(background, 0, 0);   
-    };
-
     const player = {
       x: canvas.width / 10,
       y: canvas.height / 10,
@@ -21,6 +16,9 @@ export default function Game() {
 
     const playerImage = new Image();
     playerImage.src = "/pika-pix.gif";
+
+    const background = new Image();
+    background.src = "/grass.png";
 
     const handleKeyDown = (event) => {
       const { key } = event;
@@ -38,6 +36,9 @@ export default function Game() {
 
     const drawPlayer = () => {
       context.clearRect(0, 0, canvas.width, canvas.height);
+      if(background.complete) { // Ensure the image has been loaded
+        context.drawImage(background, 0, 0, canvas.width, canvas.height);
+      }
       context.drawImage(playerImage, player.x, player.y, 50, 50);
     };
 
