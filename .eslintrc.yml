@@ -13,6 +13,6 @@ overrides:
       - "*.ts"
       - "*.tsx"
     parserOptions:
-      project: ["./client/tsconfig.json"]
+      project: ["tsconfig.json"]
 rules:
   no-html-link-for-pages: 0

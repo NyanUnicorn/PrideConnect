@@ -32,8 +32,8 @@ jobs:
         id: npm-restore
         uses: actions/cache/restore@v3
         with:
-          path: client/node_modules
-          key: ${{ runner.OS }}-node-${{ hashFiles('client/package-lock.json') }}
+          path: node_modules
+          key: ${{ runner.OS }}-node-${{ hashFiles('package-lock.json') }}
 
       - run: npm install
 
@@ -42,7 +42,7 @@ jobs:
         if:  ${{ steps.npm-restore.outputs.cache-primary-key }}.cache-hit != 'true'
         uses: actions/cache/save@v3
         with:
-          path: client/node_modules
+          path: node_modules
           key: ${{ steps.npm-restore.outputs.cache-primary-key }}
 
       - name: Restore Build Artifacts
@@ -50,9 +50,9 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: |
-            client/.sst
-            client/.next
-          key: ${{ runner.os }}-sst-build-${{ hashFiles('client/.sst/**') }}
+            .sst
+            .next
+          key: ${{ runner.os }}-sst-build-${{ hashFiles('.sst/**') }}
 
       - name: SST Build Client
         run: npx sst build --stage dev
@@ -66,6 +66,6 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: |
-            client/.sst/dist
-            client/.next
+            .sst/dist
+            .next
           key: ${{ steps.restore-build-artifacts.outputs.cache-primary-key }}
