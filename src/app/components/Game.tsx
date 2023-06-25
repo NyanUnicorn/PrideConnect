@@ -1,5 +1,3 @@
 export default function Game() {
-  return (
-    <div />
-  );
+  return <div>adfssf</div>;
 }

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import NavItem from './NavItem';
+import NavItemsContainer from './NavItemsContainer';
 
 export default function Navbar() {
   return (
@@ -18,9 +18,7 @@ export default function Navbar() {
           <span className="ml-2">PrideConnect</span>
         </div>
       </Link>
-      <span className="ml-2 items-end mr-48 mt-4">
-        Hello welcome to this page
-      </span>
+      <NavItemsContainer />
     </nav>
   );
 }

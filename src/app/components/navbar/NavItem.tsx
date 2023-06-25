@@ -6,12 +6,10 @@ type NavItemProps = {
   active?: boolean;
 };
 
-const NavItem: React.FC<NavItemProps> = ({ text, href, active }) => {
+export default function NavItem({ text, href, active }: NavItemProps) {
   return (
     <Link href={href}>
       <a className={`nav__item ${active ? "active" : ""}`}> {text}</a>
     </Link>
   );
-};
-
-export default NavItem;
+}
