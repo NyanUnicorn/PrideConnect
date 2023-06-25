@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
+import { NextRequest, NextResponse } from "next";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -13,11 +13,11 @@ const createUser = async (req: NextRequest, res: NextResponse) => {
       },
     });
     res.status(201).json({
-      message: 'User created successfully',
+      message: "User created successfully",
       newUser,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error creating user' });
+    res.status(500).json({ message: "Error creating user" });
   }
 };
 
@@ -26,7 +26,7 @@ const getUsers = async (req: NextRequest, res: NextResponse) => {
     const users = await prisma.user.findMany();
     res.status(200).json({ users });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching users' });
+    res.status(500).json({ message: "Error fetching users" });
   }
 };
 
@@ -44,9 +44,9 @@ const updateUser = async (req: NextRequest, res: NextResponse) => {
         email,
       },
     });
-    res.status(200).json({ message: 'User updated successfully', updatedUser });
+    res.status(200).json({ message: "User updated successfully", updatedUser });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating user' });
+    res.status(500).json({ message: "Error updating user" });
   }
 };
 
@@ -56,24 +56,24 @@ const deleteUser = async (req: NextRequest, res: NextResponse) => {
     const deletedUser = await prisma.user.delete({
       where: { id: Number(id) },
     });
-    res.status(200).json({ message: 'User deleted successfully', deletedUser });
+    res.status(200).json({ message: "User deleted successfully", deletedUser });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting user' });
+    res.status(500).json({ message: "Error deleting user" });
   }
 };
 
 const handler = (req: NextRequest, res: NextResponse) => {
   switch (req.method) {
-    case 'POST':
+    case "POST":
       return createUser(req, res);
-    case 'GET':
+    case "GET":
       return getUsers(req, res);
-    case 'PUT':
+    case "PUT":
       return updateUser(req, res);
-    case 'DELETE':
+    case "DELETE":
       return deleteUser(req, res);
     default:
-      return res.status(405).send('Method not allowed');
+      return res.status(405).send("Method not allowed");
   }
 };
 

@@ -1,5 +1,5 @@
-import React from 'react';
-import pino from 'pino';
+import React from "react";
+import pino from "pino";
 
 const logger = pino();
 
@@ -25,7 +25,7 @@ class ErrorBoundary extends React.Component {
       return <h1>Something went wrong.</h1>;
     }
 
-    return this.props.children; 
+    return this.props.children;
   }
 }
 
