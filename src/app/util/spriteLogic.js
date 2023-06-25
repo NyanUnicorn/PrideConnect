@@ -1,5 +1,5 @@
 // Define the size of a frame
-let frameWidth = 85;
+let frameWidth = 90;
 let frameHeight = 97;
 let beginX = 138;
 let beginY = 96;
@@ -7,10 +7,10 @@ let beginY = 96;
 let frameOffset = 1017;
 
 let playerImageIdOffsetX = [0, 110];
-let playerImageIdOffsetY = [0, 0, 134];
+let playerImageIdOffsetY = [0, 0, 134, 134];
 
-let playerLeftOffsetX = [[0, -3, 0, 10], [-5, 6, 0, -6], [0, 0, 0, 8]];
-let playerLeftOffsetY = [[0, -5, -5, -5], [0, -8, 0, -2], [0, 0, -4, 0]];
+let playerLeftOffsetX = [[0, -3, 0, 10], [-5, 6, 0, -6], [0, 0, 0, 8], [0, 4, 0, 0]];
+let playerLeftOffsetY = [[0, -5, -5, -5], [0, -8, 0, -2], [0, 0, -4, 0], [0, -4, 0, 0]];
 
 const playerImage = new Image();
 playerImage.src = "/sprites-sheet.png";
