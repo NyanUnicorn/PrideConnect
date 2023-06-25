@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-const createUser = async (req: NextRequest, res: NextResponse) => {
+const POST = async (req: NextApiRequest, res: NextApiResponse) => {
   const { name, email } = req.body;
   try {
     const newUser = await prisma.user.create({
@@ -21,7 +21,24 @@ const createUser = async (req: NextRequest, res: NextResponse) => {
   }
 };
 
-const getUsers = async (req: NextRequest, res: NextResponse) => {
+const GET = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (req.query.email) {
+    const { email } = req.query;
+    try {
+      const user = await prisma.user.findUnique({
+        where: { email: String(email) },
+      });
+
+      if (user) {
+        res.status(200).json({ user });
+      } else {
+        res.status(404).json({ message: 'User not found' });
+      }
+    } catch (error) {
+      res.status(500).json({ message: `Error fetching user for ${email}` });
+    }
+  }
+
   try {
     const users = await prisma.user.findMany();
     res.status(200).json({ users });
@@ -34,7 +51,7 @@ const getUsers = async (req: NextRequest, res: NextResponse) => {
  *  Updates the user's name and/or email via a query string.
  *  Endpoint: PUT /api/users:id
  */
-const updateUser = async (req: NextRequest, res: NextResponse) => {
+const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id, name, email } = req.query;
   try {
     const updatedUser = await prisma.user.update({
@@ -50,7 +67,7 @@ const updateUser = async (req: NextRequest, res: NextResponse) => {
   }
 };
 
-const deleteUser = async (req: NextRequest, res: NextResponse) => {
+const DELETE = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.body;
   try {
     const deletedUser = await prisma.user.delete({
@@ -62,18 +79,22 @@ const deleteUser = async (req: NextRequest, res: NextResponse) => {
   }
 };
 
-const handler = (req: NextRequest, res: NextResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
     case 'POST':
-      return createUser(req, res);
+      await POST(req, res);
+      break;
     case 'GET':
-      return getUsers(req, res);
+      await GET(req, res);
+      break;
     case 'PUT':
-      return updateUser(req, res);
+      await PUT(req, res);
+      break;
     case 'DELETE':
-      return deleteUser(req, res);
+      await DELETE(req, res);
+      break;
     default:
-      return res.status(405).send('Method not allowed');
+      res.status(405).json({ message: 'Method not allowed' });
   }
 };
 
