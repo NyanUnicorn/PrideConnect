@@ -41,7 +41,7 @@ export default function Game() {
     let currentFrame = 0;
     const gameLoop = setInterval(() => {
       // Make the frames loop
-      if (currentFrame > 4) {
+      if (currentFrame >= 4) {
         currentFrame = 0;
       }
 

@@ -1,8 +1,13 @@
 // Define the size of a frame
-let frameWidth = 55;
+let frameWidth = 63;
 let frameHeight = 97;
 let beginX = 147;
 let beginY = 96;
+
+let frameOffset = 1017;
+
+let playerImageIdOffsetX = 0;
+let playerImageIdOffsetY = 0;
 
 const playerImage = new Image();
 playerImage.src = "/sprites-sheet.png";
@@ -21,9 +26,13 @@ const drawPlayer = (context, canvas, playerImageId, currentFrame, x, y, width, h
   drawBackground(context, canvas);
   switch(playerImageId) {
     case 0:
-      context.drawImage(playerImage, beginX, beginY, frameWidth, frameHeight, x, y, width, height);
+      context.drawImage(playerImage, beginX + frameOffset * currentFrame, beginY, frameWidth, frameHeight, x, y, width, height);
+      break;
+    case 1:
+      context.drawImage(playerImage, beginX + frameOffset * currentFrame, beginY, frameWidth, frameHeight, x, y, width, height);
       break;
   }
+  
 };
 
 export { drawPlayer };
