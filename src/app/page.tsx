@@ -1,4 +1,4 @@
-import Navbar from "./components/navbar/Navbar";
+import Navbar from './components/navbar/Navbar';
 
 export default function Home() {
   return (
@@ -7,7 +7,7 @@ export default function Home() {
         <Navbar />
       </header>
       <main className="flex min-h-screen flex-col justify-between p-6">
-        <></>
+        <div />
       </main>
     </>
   );
