@@ -3,7 +3,7 @@ import { drawPlayer } from '../util/spriteLogic';
 
 export default function Game() {
   const canvasRef = useRef(null);
-  
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
@@ -12,7 +12,7 @@ export default function Game() {
     const player = {
       x: canvas.width / 10,
       y: canvas.height / 10,
-      imageId: 1,
+      imageId: 0,
       speed: 10
     };
 
@@ -21,12 +21,16 @@ export default function Game() {
 
       if (key === 'ArrowUp' || key === 'w') {
         player.y -= player.speed;
+        currentFrame++;
       } else if (key === 'ArrowDown' || key === 's') {
         player.y += player.speed;
+        currentFrame++;
       } else if (key === 'ArrowLeft' || key === 'a') {
         player.x -= player.speed;
+        currentFrame++;
       } else if (key === 'ArrowRight' || key === 'd') {
         player.x += player.speed;
+        currentFrame++;
       }
     };
 
@@ -36,20 +40,16 @@ export default function Game() {
     // The sprite image frame starts from 0
     let currentFrame = 0;
     const gameLoop = setInterval(() => {
-      // Pick a new frame
-      // currentFrame++;
-
-      // // Make the frames loop
-      // let maxFrame = numColumns * numRows - 1;
-      // if (currentFrame > maxFrame){
-      //     currentFrame = 0;
-      // }
+      // Make the frames loop
+      if (currentFrame > 4) {
+        currentFrame = 0;
+      }
 
       // Update rows and columns
       // let column = currentFrame % numColumns;
       // let row = Math.floor(currentFrame / numColumns);
-      
-      drawPlayer(context, canvas, player.imageId, player.x, player.y, 30, 30);
+
+      drawPlayer(context, canvas, player.imageId, currentFrame, player.x, player.y, 500, 500);
     }, 1000 / 60);
 
     return () => {
