@@ -8,8 +8,8 @@ let frameOffset = 1017;
 
 let playerImageIdOffsetX = [0, 110];
 
-let playerLeftOffsetX = [[0, -3, 0, 10]];
-let playerLeftOffsetY = [[0, -5, -5, -5]];
+let playerLeftOffsetX = [[0, -3, 0, 10], [-5, 3, 0, -6]];
+let playerLeftOffsetY = [[0, -5, -5, -5], [0, -8, 0, -2]];
 
 const playerImage = new Image();
 playerImage.src = "/sprites-sheet.png";
