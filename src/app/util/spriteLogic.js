@@ -1,13 +1,15 @@
 // Define the size of a frame
-let frameWidth = 67;
+let frameWidth = 75;
 let frameHeight = 97;
 let beginX = 147;
 let beginY = 96;
 
 let frameOffset = 1017;
 
-let playerImageIdOffsetX = 0;
-let playerImageIdOffsetY = 0;
+let playerImageIdOffsetX = [0, 110];
+
+let playerLeftOffsetX = [[0, -3, 0, 10]];
+let playerLeftOffsetY = [[0, -5, -5, -5]];
 
 const playerImage = new Image();
 playerImage.src = "/sprites-sheet.png";
@@ -43,34 +45,10 @@ const drawPlayer = (context, canvas, playerImageId, dir, currentFrame, x, y, wid
       break;
   }
   if(dir === 'left') {
-    switch(currentFrame) {
-      case 0:
-        horizontalFrameOffset = 0;
-        verticalFrameOffset = 0;
-        break;
-      case 1:
-        horizontalFrameOffset = 0;
-        verticalFrameOffset = -5;
-        break;
-      case 2:
-        horizontalFrameOffset = 0;
-        verticalFrameOffset = -5;
-        break;
-      case 3:
-        horizontalFrameOffset = 10;
-        verticalFrameOffset = -5;
-        break;
-    }
+    horizontalFrameOffset = playerLeftOffsetX[playerImageId][currentFrame];
+    verticalFrameOffset = playerLeftOffsetY[playerImageId][currentFrame]
   }
-  switch(playerImageId) {
-    case 0:
-      context.drawImage(playerImage, beginX + frameOffset * currentFrame + horizontalOffset + horizontalFrameOffset, beginY + verticalFrameOffset, frameWidth, frameHeight, x, y, width, height);
-      break;
-    case 0:
-      context.drawImage(playerImage, beginX + frameOffset * currentFrame + horizontalOffset + horizontalFrameOffset, beginY + verticalFrameOffset, frameWidth, frameHeight, x, y, width, height);
-      break;
-  }
-  
+  context.drawImage(playerImage, beginX + frameOffset * currentFrame + horizontalOffset + horizontalFrameOffset + playerImageIdOffsetX[playerImageId], beginY + verticalFrameOffset, frameWidth, frameHeight, x, y, width, height); 
 };
 
 export { drawPlayer };

@@ -54,7 +54,7 @@ export default function Game() {
       // let column = currentFrame % numColumns;
       // let row = Math.floor(currentFrame / numColumns);
 
-      drawPlayer(context, canvas, player.imageId, player.dir, currentFrame, player.x, player.y, 50, 50);
+      drawPlayer(context, canvas, player.imageId, player.dir, currentFrame, player.x, player.y, 300, 300);
     }, 1000 / 60);
 
     return () => {
