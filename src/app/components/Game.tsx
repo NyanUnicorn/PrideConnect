@@ -13,7 +13,8 @@ export default function Game() {
       x: canvas.width / 10,
       y: canvas.height / 10,
       imageId: 0,
-      speed: 10
+      speed: 20,
+      dir: 'right'
     };
 
     const handleKeyDown = (event) => {
@@ -21,15 +22,19 @@ export default function Game() {
 
       if (key === 'ArrowUp' || key === 'w') {
         player.y -= player.speed;
+        player.dir = 'up';
         currentFrame++;
       } else if (key === 'ArrowDown' || key === 's') {
         player.y += player.speed;
+        player.dir = 'down';
         currentFrame++;
       } else if (key === 'ArrowLeft' || key === 'a') {
         player.x -= player.speed;
+        player.dir = 'left';
         currentFrame++;
       } else if (key === 'ArrowRight' || key === 'd') {
         player.x += player.speed;
+        player.dir = 'right';
         currentFrame++;
       }
     };
@@ -49,7 +54,7 @@ export default function Game() {
       // let column = currentFrame % numColumns;
       // let row = Math.floor(currentFrame / numColumns);
 
-      drawPlayer(context, canvas, player.imageId, currentFrame, player.x, player.y, 500, 500);
+      drawPlayer(context, canvas, player.imageId, player.dir, currentFrame, player.x, player.y, 300, 300);
     }, 1000 / 60);
 
     return () => {
@@ -61,7 +66,7 @@ export default function Game() {
 
   return (
     <div>
-      <canvas className="w-full h-full bg-white mt-[-25px]" ref={canvasRef} width={1000} height={800} />
+      <canvas className="w-full h-full bg-white mt-[-25px]" ref={canvasRef} width={1000} height={680} />
     </div>
   );
 }
