@@ -42,23 +42,29 @@ const drawPlayer = (context, canvas, playerImageId, dir, currentFrame, x, y, wid
       verticalOffset = 0;
       break;
   }
-  switch(currentFrame) {
-    case 0:
-      horizontalFrameOffset = 0;
-      break;
-    case 1:
-      horizontalFrameOffset = 0;
-      break;
-    case 2:
-      horizontalFrameOffset = 0;
-      break;
-    case 3:
-      horizontalFrameOffset = 0;
-      break;
+  if(dir === 'left') {
+    switch(currentFrame) {
+      case 0:
+        horizontalFrameOffset = 0;
+        verticalFrameOffset = 0;
+        break;
+      case 1:
+        horizontalFrameOffset = 0;
+        verticalFrameOffset = -5;
+        break;
+      case 2:
+        horizontalFrameOffset = 0;
+        verticalFrameOffset = -5;
+        break;
+      case 3:
+        horizontalFrameOffset = 10;
+        verticalFrameOffset = -5;
+        break;
+    }
   }
   switch(playerImageId) {
     case 0:
-      context.drawImage(playerImage, beginX + frameOffset * currentFrame + horizontalOffset + horizontalFrameOffset, beginY, frameWidth, frameHeight, x, y, width, height);
+      context.drawImage(playerImage, beginX + frameOffset * currentFrame + horizontalOffset + horizontalFrameOffset, beginY + verticalFrameOffset, frameWidth, frameHeight, x, y, width, height);
       break;
     case 1:
       context.drawImage(playerImage, beginX + frameOffset * currentFrame, beginY, frameWidth, frameHeight, x, y, width, height);
