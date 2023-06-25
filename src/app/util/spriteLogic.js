@@ -12,16 +12,16 @@ playerImage.src = "/sprites-sheet.png";
 const background = new Image();
 background.src = "/grass.png";
 
-const drawBackground = () => {
+const drawBackground = (context, canvas) => {
   if(background.complete) { // Ensure the image has been loaded
     context.drawImage(background, 0, 0, canvas.width, canvas.height);
   }
 }
 
-const drawPlayer = (playerImage, x, y, width, height) => {
+const drawPlayer = (context, canvas, playerImageId, x, y, width, height) => {
   context.clearRect(0, 0, canvas.width, canvas.height);
-  drawBackground();
-  context.drawImage(playerImage, player.x, player.y, 50, 50);
+  drawBackground(context, canvas);
+  context.drawImage(playerImage, x, y, width, height);
 };
 
-export default { playerImage, drawPlayer };
+export { drawPlayer };

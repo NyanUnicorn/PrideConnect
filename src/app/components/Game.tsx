@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { playerImage } from '../util/spriteLogic';
+import { drawPlayer } from '../util/spriteLogic';
 
 export default function Game() {
   const canvasRef = useRef(null);
@@ -8,12 +8,11 @@ export default function Game() {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
 
-   
-
     // Drawing and game logic here
     const player = {
       x: canvas.width / 10,
       y: canvas.height / 10,
+      imageId: 1,
       speed: 10
     };
 
@@ -50,7 +49,7 @@ export default function Game() {
       // let column = currentFrame % numColumns;
       // let row = Math.floor(currentFrame / numColumns);
       
-      // drawPlayer(playerImage, 10, 30, frameWidth, frameHeight);
+      drawPlayer(context, canvas, player.imageId, player.x, player.y, 30, 30);
     }, 1000 / 60);
 
     return () => {
