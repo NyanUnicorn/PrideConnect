@@ -2,6 +2,12 @@ import { Context } from "koa";
 import { z } from "zod";
 import * as User from "../models/users.model";
 
+declare module "koa" {
+  interface Request {
+    body: any;
+  }
+}
+
 // GET /users - Retrieves a list of all users
 export const getUsers = async (ctx: Context) => {
   const users = await User.getAllUsers();

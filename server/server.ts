@@ -10,20 +10,20 @@
 // import playersRoutes from "./routes/players.routes";
 // import roomsRoutes from "./routes/rooms.routes";
 
-const createServer = require('http');
+const { createServer } = require('http');
 const parse = require('url');
 const nextServer = require('next');
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const socketIO = require('socket.io');
 
-const socketController = require('./controllers/socket.controller');
+// const socketController = require('./controllers/socket.controller');
 
-const usersRoutes = require('./routes/users.routes');
-const playersRoutes = require('./routes/players.routes');
-const roomsRoutes = require('./routes/rooms.routes');
+const { default: usersRoutes } = require('./routes/users.routes');
+const { default: playersRoutes } = require('./routes/players.routes');
+const { default: roomsRoutes } = require('./routes/rooms.routes');
 
-const port = Number(process.env.PORT) || 3000;
+const port = Number(process.env.PORT) || 3001;
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
 const nextApp = nextServer({ dev, hostname, port });
@@ -34,7 +34,7 @@ nextApp.prepare().then(async () => {
   const server = createServer(app.callback());
   const io = new socketIO.Server(server);
 
-  socketController(io);
+  // socketController(io);
 
   app.use(bodyParser());
 

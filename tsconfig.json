@@ -13,7 +13,7 @@
       "dom.iterable",
       "esnext"
     ],
-    "module": "esnext",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "noEmit": true,
     "noImplicitAny": false,
@@ -30,6 +30,7 @@
     ],
     "typeRoots": [
       "node_modules/@types",
+      "node_modules/koa-body",
       "@types"
     ],
     "types": [
