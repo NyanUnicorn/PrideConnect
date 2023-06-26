@@ -12,9 +12,10 @@
       "module": "CommonJS"
     }
   },
-  "exclude": ["./dist`", "/node_modules"],
+  "exclude": ["./dist", "/node_modules"],
   "include": [
     "./server.ts",
+    "*.ts",
     "./**/*.ts"
-  ],
+  ]
 }

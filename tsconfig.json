@@ -7,7 +7,7 @@
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
     "isolatedModules": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "lib": [
       "dom",
       "dom.iterable",
@@ -46,13 +46,14 @@
     "target": "es5"
   },
   "exclude": [
-    "node_modules",
+    "node_modules"
   ],
   "include": [
     "next-env.d.ts",
     "**/*/*.ts",
     "**/*/*.tsx",
     ".next/types/**/*.ts",
-    "__tests__/**/*"
-, "__tests__/users.routes.test.js"  ]
+    "__tests__/**/*",
+    "__tests__/users.routes.test.js"
+  ]
 }

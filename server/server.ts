@@ -11,6 +11,9 @@ import usersRoutes from "./routes/users.routes";
 import playersRoutes from "./routes/players.routes";
 import roomsRoutes from "./routes/rooms.routes";
 
+import handleChatSocketEvents from "./sockets/chatEvents";
+import handlePlayerSocketEvents from "./sockets/playerEvents";
+
 const port = Number(process.env.PORT) || 8989;
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -28,9 +31,7 @@ const logger = pino({
 
 // GLOBAL VARIABLES
 let roomClientsMap = new Map<string, Set<WebSocket>>();
-
-let currentRoom = ""
-
+let currentRoom = "";
 
 const app = new Koa();
 nextApp.prepare().then(async () => {
@@ -52,12 +53,8 @@ nextApp.prepare().then(async () => {
   app.use(roomsRoutes.allowedMethods());
 
   wss.on("connection", (ws: WebSocket) => {
-    ws.on("message", (data: string) => {
-      logger.info("received: %s", data);
-      ws.emit("message", "Hello World");
-    });
-
-    ws.send("something");
+    handleChatSocketEvents(ws, wss, roomClientsMap, currentRoom, logger);
+    handlePlayerSocketEvents(ws, wss, roomClientsMap, currentRoom, logger);
   });
 
   // Handle other requests using Next.js
