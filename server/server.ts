@@ -58,7 +58,7 @@ nextApp.prepare().then(async () => {
 
   const urlSchema = z.string().url();
   app.use(async (ctx: Koa.Context) => {
-    const parsedUrl = url.parse(urlSchema.parse(ctx.req.url), true);
+    const parsedUrl = url.parse(urlSchema.parse(ctx.request.URL.href), true);
     await handle(ctx.req, ctx.res, parsedUrl);
     ctx.respond = false;
   });

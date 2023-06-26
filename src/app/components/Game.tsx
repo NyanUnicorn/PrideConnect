@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { create } from 'zustand';
-import { drawPlayer } from '../util/spriteLogic';
+import { drawPlayer } from '../utils/spriteLogic';
 
 export default function Game() {
   const canvasRef = useRef(null);
 
-  useGameStore = create((set) => ({}));
+  const useGameStore = create((set) => ({}));
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -67,7 +67,7 @@ export default function Game() {
 
   return (
     <div>
-      <canvas className="w-full h-full bg-white mt-[-25px]" ref={canvasRef} width={1000} height={675} />
+      <canvas className="w-full h-full bg-white mt-[-25px]" ref={canvasRef} width={1000} height={800} />
     </div>
   );
 }
