@@ -13,11 +13,7 @@
       "dom.iterable",
       "esnext"
     ],
-<<<<<<< HEAD
-    "module": "CommonJS",
-=======
     "module": "esnext",
->>>>>>> 9d23635c0e206e005bcc52936b66d817218abe86
     "moduleResolution": "node",
     "noEmit": true,
     "noImplicitAny": false,
@@ -34,10 +30,7 @@
     ],
     "typeRoots": [
       "node_modules/@types",
-<<<<<<< HEAD
       "node_modules/koa-body",
-=======
->>>>>>> 9d23635c0e206e005bcc52936b66d817218abe86
       "@types"
     ],
     "types": [
