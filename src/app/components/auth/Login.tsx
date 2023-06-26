@@ -1,16 +1,43 @@
-import { signIn } from 'next-auth/react';
+import { useRouter } from "next/router";
+import { useRef, useState } from 'react'
 
 export default function Login() {
+  const router = useRouter();
+  const emailInput = useRef();
+  const passwordInput = useRef();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const email = emailInput.current.value;
+    const password = passwordInput.current.value;
+
+    const response = await fetch("/api/sessions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+
+    if (response.ok) {
+      return router.push("/private");
+    }
+  };
+
   return (
-    <a
-      href="/api/auth/signin"
-      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      onClick={(e) => {
-        e.preventDefault();
-        signIn();
-      }}
-    >
-      Sign in
-    </a>
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>
+          Email: <input type="text" ref={emailInput} />
+        </label>
+      </div>
+      <div>
+        <label>
+          Password: <input type="password" ref={passwordInput} />
+        </label>
+      </div>
+      <div>
+        <button type="submit">Sign in</button>
+      </div>
+    </form>
   );
 }
