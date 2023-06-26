@@ -39,6 +39,26 @@ export default function Game() {
         player.x += player.speed;
         player.dir = 'right';
         currentFrame++;
+      } else if (key === '1') {
+        player.imageId = 1
+      } else if(key === '2') {
+        player.imageId = 2
+      } else if(key === '3') {
+        player.imageId = 3
+      } else if(key === '4') {
+        player.imageId = 4
+      } else if(key === '5') {
+        player.imageId = 5
+      } else if(key === '6') {
+        player.imageId = 6
+      } else if(key === '7') {
+        player.imageId = 7
+      } else if(key === '8') {
+        player.imageId = 8
+      } else if(key === '9') {
+        player.imageId = 9
+      } else if(key === '0') {
+        player.imageId = 0
       }
     };
 
@@ -54,7 +74,7 @@ export default function Game() {
         currentFrame = 0;
       }
       
-      drawPlayer(context, canvas, 8, player.dir, currentFrame, player.x, player.y, 50, 50);
+      drawPlayer(context, canvas, player.imageId, player.dir, currentFrame, player.x, player.y, 50, 50);
     }, 1000 / 60);
 
     return () => {
