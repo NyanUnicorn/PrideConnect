@@ -17,7 +17,11 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
   session: Session;
+<<<<<<< HEAD
 }) {(
+=======
+}) {
+>>>>>>> 9d23635c0e206e005bcc52936b66d817218abe86
     <html lang='en'>
       <body className={inter.className}>{children}</body>
     </html>
