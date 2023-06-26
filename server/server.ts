@@ -1,13 +1,27 @@
-import { createServer } from "http";
-import { parse } from "url";
-import nextServer from "next";
-import Koa from "koa";
-import bodyParser from "koa-bodyparser";
-import socketIO from "socket.io";
+// import { createServer } from "http";
+// import { parse } from "url";
+// import nextServer from "next";
+// import Koa from "koa";
+// import bodyParser from "koa-bodyparser";
+// import socketIO from "socket.io";
+// import socketController from "./controllers/socket.controller";
 
-import usersRoutes from "./routes/users.routes";
-import playersRoutes from "./routes/players.routes";
-import roomsRoutes from "./routes/rooms.routes";
+// import usersRoutes from "./routes/users.routes";
+// import playersRoutes from "./routes/players.routes";
+// import roomsRoutes from "./routes/rooms.routes";
+
+const createServer = require('http');
+const parse = require('url');
+const nextServer = require('next');
+const Koa = require('koa');
+const bodyParser = require('koa-bodyparser');
+const socketIO = require('socket.io');
+
+const socketController = require('./controllers/socket.controller');
+
+const usersRoutes = require('./routes/users.routes');
+const playersRoutes = require('./routes/players.routes');
+const roomsRoutes = require('./routes/rooms.routes');
 
 const port = Number(process.env.PORT) || 3000;
 const dev = process.env.NODE_ENV !== "production";
@@ -51,4 +65,4 @@ nextApp.prepare().then(async () => {
   });
 });
 
-export default nextApp;
+module.exports = nextApp;

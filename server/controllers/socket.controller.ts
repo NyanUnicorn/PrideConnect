@@ -1,4 +1,8 @@
-const { User, Room, Message, UserRoom } = require('../models/db.model'); // adjust this to match your actual models
+// const { User, Room, Message, UserRoom } = require('../models/db.model'); // adjust this to match your actual models
+// const User = require('./users.controller');
+// const Room = require('./rooms.controller');
+// import * as User from "../models/users.model";
+// import * as Room from "../models/rooms.model";
 
 const socketController = (io) => {
   io.on('connection', (socket) => {
@@ -64,4 +68,4 @@ const socketController = (io) => {
   });
 }
 
-module.exports = socketController;
+export default socketController;
