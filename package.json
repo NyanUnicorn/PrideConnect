@@ -6,6 +6,7 @@
     "dev": "sst bind next dev",
     "build": "next build",
     "start": "next start",
+    "server": "nodemon server/server.js",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint": "next lint",
     "test": "jest"
@@ -16,6 +17,7 @@
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
     "autoprefixer": "10.4.14",
+    "cookie-parser": "^1.4.6",
     "next": "13.4.7",
     "next-auth": "^4.22.1",
     "pino": "^8.14.1",
