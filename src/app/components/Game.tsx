@@ -49,11 +49,7 @@ export default function Game() {
       if (currentFrame >= 4) {
         currentFrame = 0;
       }
-
-      // Update rows and columns
-      // let column = currentFrame % numColumns;
-      // let row = Math.floor(currentFrame / numColumns);
-
+      
       drawPlayer(context, canvas, 8, player.dir, currentFrame, player.x, player.y, 50, 50);
     }, 1000 / 60);
 
@@ -66,7 +62,7 @@ export default function Game() {
 
   return (
     <div>
-      <canvas className="w-full h-full bg-white mt-[-25px]" ref={canvasRef} width={1000} height={670} />
+      <canvas className="w-full h-full bg-white mt-[-25px]" ref={canvasRef} width={1000} height={675} />
     </div>
   );
 }
