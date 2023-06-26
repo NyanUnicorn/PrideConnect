@@ -1,162 +1,178 @@
 import { WebSocket } from "ws";
 import { Logger } from "pino";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { z } from "zod";
 import * as Room from "../models/rooms.model";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as User from "../models/users.model";
 
-/**
- * Global Variables
- */
+// Global Vars
+let roomClientsMap = new Map<string, Set<WebSocket>>();
 
-const state = {
-  roomClientsMap: new Map<string, WebSocket[]>(),
-};
-
-const currentUserSchema = z.object({
-  email: z.string().email(),
-  id: z.string().cuid(),
-  name: z.string().optional(),
+// Schema
+const messageSchema = z.object({
+  id: z.string(),
+  content: z.string(),
+  timestamp: z.date(),
+  senderId: z.string(),
+  roomId: z.string(),
 });
 
-const sendSocketMessage = (ws: WebSocket, type: string, payload: any) => {
+// helpers
+const sendSocketMessage = (ws: WebSocket, type: string, payload: unknown) => {
   ws.send(JSON.stringify({ type, payload }));
 };
 
-// initiate first handshake
-const handleConnect = async (ws: WebSocket, logger: Logger, payload: any) => {
-  const { email, room, user } = payload;
-  sendSocketMessage(ws, "welcome", "Welcome to the Game!");
+const handleUserListRooms = async (ws: WebSocket) => {
+  // Send a list of rooms to the user
+  const rooms = await Room.getAllRooms();
+  if (!rooms.length) {
+    const defaultRoom = await Room.createRoom({ name: "general" });
+    return [defaultRoom];
+  }
 
-  const currentUser = currentUserSchema.parse(await User.getUserByEmail(email));
+  sendSocketMessage(ws, "listRooms", { rooms });
+  return rooms;
+};
 
-  ws.on("close", () => {
-    logger.info("User disconnected");
-    handleCloseConnection(ws, currentUser.currentRoom);
+const handleListUsersInRoom = (ws: WebSocket, user: string, room: string) => {
+  // Get list of users in room
+  const users = Room.getRoomUsers(room);
+  sendSocketMessage(ws, "listUsersInRoom", { room, users });
+};
+
+// handlers
+const handleUserJoinRoom = (ws: WebSocket, user: string, room: string) => {
+  // Add user to the room
+  Room.joinRoom(room, user);
+
+  // If room does not exist, create it
+  if (!roomClientsMap.has(room)) {
+    roomClientsMap.set(room, new Set());
+  }
+
+  // Add user to room
+  roomClientsMap.get(room)?.add(ws);
+
+  // Notify room users that user has joined
+  roomClientsMap.get(room)?.forEach((client) => {
+    if (client !== ws && client.readyState === WebSocket.OPEN) {
+      sendSocketMessage(client, "userJoinRoom", { room, user });
+    }
   });
 
-  handleNewConnection(ws, currentUser.currentRoom);
-
-  // Join the user to the room
-  const foundRoom = await Room.joinRoom(room, currentUser.id);
-
-  if (foundRoom === null) {
-    const status = await Room.createRoom({ name: room });
-    logger.info(`New room created: ${status}`);
-  }
-
-  const foundMessages = await Room.getRoomMessages(room);
-
-  sendSocketMessage(ws, "messageHistory", foundMessages);
-  sendSocketMessage(ws, "userJoined", `${user} has joined the room.`);
-
-  return room;
+  // Send back a confirmation to the user that they have joined the room
+  sendSocketMessage(ws, "joinRoom", { room, user });
 };
 
-const handleJoinRoom = async (
+const handleUserLeaveRoom = async (ws: WebSocket, user: string, room: string) => {
+  // Remove user from the room
+  roomClientsMap.get(room)?.delete(ws);
+  const status = await Room.leaveRoom(room, user);
+  return status;
+};
+
+const handleUserSendMessage = async (
   ws: WebSocket,
-  logger: Logger,
-  payload: any,
-  currentUser: any
+  user: string,
+  payload: { message: z.infer<typeof messageSchema>; room: string }
 ) => {
-  const { room, user } = payload;
-
-  // Join the user to the room
-  const foundRoom = await Room.joinRoom(room, currentUser.id);
-
-  if (foundRoom === null) {
-    const status = await Room.createRoom({ name: room });
-    logger.info(`New room created: ${status}`);
-  }
-
-  const foundMessages = await Room.getRoomMessages(room);
-
-  sendSocketMessage(ws, "messageHistory", foundMessages);
-  sendSocketMessage(ws, "userJoined", `${user} has joined the room.`);
-
-  return room;
-};
-
-const getConnectedClientsInRoom = (room: string): WebSocket[] =>
-  state.roomClientsMap.get(room) || [];
-
-const broadcastMessageToRoom = (room: string, type: string, payload: any) => {
-  // Retrieve all connected clients in the room
-  const clients = getConnectedClientsInRoom(room);
-
-  // Send the message to each connected client in the room
-  clients.forEach((client) => {
-    sendSocketMessage(client, type, payload);
+  // Send message to all users in the room
+  roomClientsMap.get(payload.room)?.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      sendSocketMessage(client, "message", payload.message);
+    }
   });
 };
 
-const handleSendMessage = async (
-  ws: WebSocket,
-  logger: Logger,
-  payload: any,
-  currentUser: any
-) => {
-  const { message, room } = payload;
+const handleUserConnection = async (ws: WebSocket, user: string) => {
+  // Send a list of rooms to the user
+  const rooms = await handleUserListRooms(ws);
 
-  // Save the message to the database
-  const newMessage = await User.sendUserMessage(currentUser.id, room, message);
-  logger.info("New message created");
+  // Join default room
+  await handleUserJoinRoom(ws, user, rooms[0].id);
 
-  // Broadcast the new message to all users in the room
-  broadcastMessageToRoom(room, "message", newMessage);
-
-  return newMessage;
+  if (!roomClientsMap) {
+    roomClientsMap = new Map();
+  }
 };
 
-const handleNewConnection = (ws: WebSocket, room: string): void => {
-  // Add the client to the room's list of connected clients
-  const clients = state.roomClientsMap.get(room) || [];
-  clients.push(ws);
-  state.roomClientsMap.set(room, clients);
-};
+// handle chat evenets
 
-const handleCloseConnection = (ws: WebSocket, room: string): void => {
-  // Remove the client from the room's list of connected clients
-  const clients = state.roomClientsMap.get(room) || [];
-  const updatedClients = clients.filter((client) => client !== ws);
-  state.roomClientsMap.set(room, updatedClients);
-};
-
-const handleSocketEvents = (ws: WebSocket, logger: Logger, user: string) => {
-  let currentUser: z.infer<typeof currentUserSchema>;
-
+const handleChatSocketEvents = async (logger: Logger, ws: WebSocket) => {
   ws.on("message", async (data: string) => {
-    let message: { type: string; payload: any };
+    const dataSchema = z.object({
+      type: z.string(),
+      payload: z.object({
+        user: z.string(),
+        room: z.string().optional(),
+        message: messageSchema.optional(),
+      }),
+    });
+
+    let parsedData;
 
     try {
-      message = JSON.parse(data);
+      parsedData = dataSchema.parse(JSON.parse(data));
     } catch (error) {
       logger.error(`Error parsing message: ${error}`);
       return;
     }
 
-    switch (message.type) {
+    switch (parsedData.type) {
       case "connect":
-        currentUser = await handleConnectAndNewConnection(
+        // Handle user connection
+        await handleUserConnection(ws, parsedData.payload.user as string);
+        break;
+
+      case "joinRoom":
+        // Handle user joining a room
+        await handleUserJoinRoom(
           ws,
-          logger,
-          message.payload
+          parsedData.payload.user as string,
+          parsedData.payload.room as string
         );
         break;
-      case "join":
-        await handleJoin(ws, logger, message.payload, currentUser);
+
+      case "leaveRoom":
+        // Handle user leaving a room
+        await handleUserLeaveRoom(
+          ws,
+          parsedData.payload.user as string,
+          parsedData.payload.room as string
+        );
         break;
+
       case "sendMessage":
-        await handleSendMessage(ws, logger, message.payload, currentUser);
+        // Handle user sending a message
+        if (!parsedData.payload.room || !parsedData.payload.message) {
+          logger.error("Room or message missing from payload");
+        }
+        await handleUserSendMessage(ws, parsedData.payload.user, {
+          message: parsedData.payload.message!,
+          room: parsedData.payload.room!,
+        });
         break;
+
+      case "listRooms":
+        // Handle user requesting a list of rooms
+        await handleUserListRooms(ws);
+        break;
+
+      case "listUsersInRoom":
+        // Handle user requesting a list of users in a room
+        await handleListUsersInRoom(
+          ws,
+          parsedData.payload.user as string,
+          parsedData.payload.room as string
+        );
+        break;
+
       default:
-        logger.warn(`Unhandled event type: ${message.type}`);
+        // Handle unknown event
         break;
     }
   });
-
-  ws.on("error", (error) => {
-    logger.error(`WebSocket error: ${error}`);
-  });
 };
 
-export default handleSocketEvents;
+export default handleChatSocketEvents;
