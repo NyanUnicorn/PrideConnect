@@ -26,8 +26,14 @@ const logger = pino({
   },
 });
 
+// GLOBAL VARIABLES
+let roomClientsMap = new Map<string, Set<WebSocket>>();
+
+let currentRoom = ""
+
+
+const app = new Koa();
 nextApp.prepare().then(async () => {
-  const app = new Koa();
   const server = createServer(app.callback());
   const wss = new Server({ server, path: "/api/ws" });
 

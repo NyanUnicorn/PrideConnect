@@ -20,7 +20,8 @@
     "paths": {
       "@/*": [
         "src/app/*",
-        "src/pages/*"
+        "src/pages/*",
+        "server/*"
       ]
     },
     "plugins": [
@@ -51,6 +52,7 @@
     "next-env.d.ts",
     "**/*/*.ts",
     "**/*/*.tsx",
-    ".next/types/**/*.ts"
-  ]
+    ".next/types/**/*.ts",
+    "__tests__/**/*"
+, "__tests__/users.routes.test.js"  ]
 }
