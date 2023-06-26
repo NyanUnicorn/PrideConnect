@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { create } from 'zustand';
-import { drawPlayer } from '../util/spriteLogic';
+import { drawPlayer } from '../utils/spriteLogic';
 
 export default function Game() {
   const canvasRef = useRef(null);
