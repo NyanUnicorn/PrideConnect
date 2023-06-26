@@ -5,6 +5,8 @@ import { drawPlayer } from '../util/spriteLogic';
 export default function Game() {
   const canvasRef = useRef(null);
 
+  useGameStore = create((set) => ({}));
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
