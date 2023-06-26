@@ -1,8 +1,11 @@
 import { useEffect, useRef } from 'react';
+import { create } from 'zustand';
 import { drawPlayer } from '../util/spriteLogic';
 
 export default function Game() {
   const canvasRef = useRef(null);
+
+  useGameStore = create((set) => ({}));
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -40,6 +43,7 @@ export default function Game() {
     };
 
     window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', (event) => { currentFrame = 0 });
 
     // game loop
     // The sprite image frame starts from 0
@@ -49,24 +53,21 @@ export default function Game() {
       if (currentFrame >= 4) {
         currentFrame = 0;
       }
-
-      // Update rows and columns
-      // let column = currentFrame % numColumns;
-      // let row = Math.floor(currentFrame / numColumns);
-
+      
       drawPlayer(context, canvas, 8, player.dir, currentFrame, player.x, player.y, 50, 50);
     }, 1000 / 60);
 
     return () => {
       // Clean up or remove event listeners if needed
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', () => {});
       clearInterval(gameLoop);
     };
   }, []);
 
   return (
     <div>
-      <canvas className="w-full h-full bg-white mt-[-25px]" ref={canvasRef} width={1000} height={670} />
+      <canvas className="w-full h-full bg-white mt-[-25px]" ref={canvasRef} width={1000} height={675} />
     </div>
   );
 }
