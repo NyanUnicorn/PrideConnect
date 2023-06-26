@@ -53,8 +53,8 @@ nextApp.prepare().then(async () => {
   app.use(roomsRoutes.allowedMethods());
 
   wss.on("connection", (ws: WebSocket) => {
-    handleChatSocketEvents(ws, wss, roomClientsMap, currentRoom, logger);
-    handlePlayerSocketEvents(ws, wss, roomClientsMap, currentRoom, logger);
+    handleChatSocketEvents(logger, ws, roomClientsMap, currentRoom);
+    handlePlayerSocketEvents(logger, ws, roomClientsMap, currentRoom);
   });
 
   // Handle other requests using Next.js
