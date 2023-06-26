@@ -21,11 +21,25 @@ export async function createRoom(data: { name: string }) {
   return Room.create({ data });
 }
 
-// Update a specific room by ID
-export async function updateRoom(id: string, data: { name: string }) {
-  return Room.update({
-    where: { id },
-    data,
+// Join a specific room by ID
+export async function joinRoom(roomId: string, userId: string) {
+  return prisma.userRoom.create({
+    data: {
+      userId,
+      roomId,
+    },
+  });
+}
+
+// Leave a specific room by ID
+export async function leaveRoom(roomId: string, userId: string) {
+  return prisma.userRoom.delete({
+    where: {
+      userId_roomId: {
+        userId,
+        roomId,
+      },
+    },
   });
 }
 
@@ -40,6 +54,7 @@ export async function deleteRoom(id: string) {
 export async function getRoomMessages(id: string) {
   return prisma.message.findMany({
     where: { roomId: id },
+    orderBy: { timestamp: "asc" },
   });
 }
 

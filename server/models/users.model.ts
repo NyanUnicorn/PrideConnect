@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
+import { z } from "zod";
 
 const prisma = new PrismaClient();
+
 const User = prisma.user;
 
 export async function getAllUsers() {
@@ -9,8 +11,41 @@ export async function getAllUsers() {
 
 export async function getUserById(id: string) {
   const user = await User.findUnique({ where: { id } });
-  if (!user) throw new Error("User not found");
-  return user;
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const userSchema = z.object({
+    id: z.string(),
+    name: z.string().nullable(),
+    email: z.string(),
+  });
+
+  const validatedUser = userSchema.safeParse(user);
+
+  if (validatedUser.success) {
+    return validatedUser.data;
+  }
+
+  throw new Error("User validation failed");
+}
+
+export async function getUserByEmail(email: string) {
+  const user = await User.findUnique({ where: { email } });
+  const userSchema = z.object({
+    id: z.string(),
+    name: z.string().nullable(),
+    email: z.string(),
+  });
+
+  const validatedUser = userSchema.safeParse(user);
+
+  if (validatedUser.success) {
+    return validatedUser.data;
+  }
+
+  throw new Error("User not found");
 }
 
 export async function createUser(email: string, name: string | undefined) {
@@ -65,5 +100,19 @@ export async function getUserPlayers(id: string) {
   return User.findUnique({
     where: { id },
     include: { Player: true },
+  });
+}
+
+export async function sendUserMessage(
+  userId: string,
+  roomId: string,
+  content: string
+) {
+  return prisma.message.create({
+    data: {
+      content,
+      senderId: userId,
+      roomId,
+    },
   });
 }

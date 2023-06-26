@@ -14,7 +14,10 @@ router.get("/rooms/:id", roomsController.getRoomById);
 router.post("/rooms", roomsController.createRoom);
 
 // PUT /rooms/:id - Updates a specific room by ID
-router.put("/rooms/:id", roomsController.updateRoom);
+router.put("/rooms/:id", roomsController.joinRoom);
+
+// Delete /rooms/:id/leave - Leaves a specific room by ID
+router.put("/rooms/:id/leave", roomsController.leaveRoom);
 
 // DELETE /rooms/:id - Deletes a specific room by ID
 router.delete("/rooms/:id", roomsController.deleteRoom);

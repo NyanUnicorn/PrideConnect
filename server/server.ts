@@ -1,30 +1,35 @@
 import { createServer } from "http";
-import { parse } from "url";
 import nextServer from "next";
 import Koa from "koa";
 import bodyParser from "koa-bodyparser";
-import socketIO from "socket.io";
+import pino from "pino";
+import { WebSocket, Server } from "ws";
 
 import usersRoutes from "./routes/users.routes";
 import playersRoutes from "./routes/players.routes";
 import roomsRoutes from "./routes/rooms.routes";
 
-const port = Number(process.env.PORT) || 3000;
+const port = Number(process.env.PORT) || 8989;
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
 const nextApp = nextServer({ dev, hostname, port });
 const handle = nextApp.getRequestHandler();
 
+const logger = pino({
+  transport: {
+    target: "pino-pretty",
+    options: {
+      ignore: "pid,hostname",
+    },
+  },
+});
+
 nextApp.prepare().then(async () => {
   const app = new Koa();
   const server = createServer(app.callback());
-  const io = new socketIO.Server(server);
-
-  socketController(io);
+  const wss = new Server({ server, path: "/api/ws" });
 
   app.use(bodyParser());
-
-  // logger
 
   // Register the users routes
   app.use(usersRoutes.routes());
@@ -38,9 +43,17 @@ nextApp.prepare().then(async () => {
   app.use(roomsRoutes.routes());
   app.use(roomsRoutes.allowedMethods());
 
+  wss.on("connection", (ws: WebSocket) => {
+    ws.on("message", (data: string) => {
+      logger.info("received: %s", data);
+      ws.emit("message", "Hello World");
+    });
+
+    ws.send("something");
+  });
+
   // Handle other requests using Next.js
-  app.use(async (ctx) => {
-    const parsedUrl = parse(ctx.request.URL.toString(), true);
+  app.use(async (ctx: Koa.Context) => {
     await handle(ctx.req, ctx.res, parsedUrl);
     ctx.respond = false;
   });

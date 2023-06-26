@@ -63,3 +63,14 @@ export const getUserPlayers = async (ctx: Context) => {
   const userPlayers = await User.getUserPlayers(id);
   ctx.body = userPlayers;
 };
+
+export const sendUserMessage = async (ctx: Context) => {
+  const bodySchema = z.object({
+    roomId: z.string().min(1),
+    message: z.string().min(1),
+  });
+  const { message, roomId } = bodySchema.parse(ctx.request.body);
+  const { id } = ctx.params;
+  const userMessage = await User.sendUserMessage(id, roomId, message);
+  ctx.body = userMessage;
+};
