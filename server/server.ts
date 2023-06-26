@@ -2,17 +2,13 @@ import { createServer } from "http";
 import nextServer from "next";
 import Koa from "koa";
 import bodyParser from "koa-bodyparser";
-import pino from "pino";
-import { WebSocket, Server } from "ws";
 import url from "url";
 import { z } from "zod";
 
+import { Server, Socket } from "socket.io";
 import usersRoutes from "./routes/users.routes";
 import playersRoutes from "./routes/players.routes";
 import roomsRoutes from "./routes/rooms.routes";
-
-import handleChatSocketEvents from "./sockets/chatEvents";
-import handlePlayerSocketEvents from "./sockets/playerEvents";
 
 const port = Number(process.env.PORT) || 8989;
 const dev = process.env.NODE_ENV !== "production";
@@ -20,23 +16,11 @@ const hostname = "localhost";
 const nextApp = nextServer({ dev, hostname, port });
 const handle = nextApp.getRequestHandler();
 
-const logger = pino({
-  transport: {
-    target: "pino-pretty",
-    options: {
-      ignore: "pid,hostname",
-    },
-  },
-});
-
 // GLOBAL VARIABLES
-let roomClientsMap = new Map<string, Set<WebSocket>>();
-let currentRoom = "";
-
 const app = new Koa();
 nextApp.prepare().then(async () => {
   const server = createServer(app.callback());
-  const wss = new Server({ server, path: "/api/ws" });
+  const io = new Server(server);
 
   app.use(bodyParser());
 
@@ -52,11 +36,6 @@ nextApp.prepare().then(async () => {
   app.use(roomsRoutes.routes());
   app.use(roomsRoutes.allowedMethods());
 
-  wss.on("connection", (ws: WebSocket) => {
-    handleChatSocketEvents(logger, ws, roomClientsMap, currentRoom);
-    handlePlayerSocketEvents(logger, ws, roomClientsMap, currentRoom);
-  });
-
   // Handle other requests using Next.js
 
   const urlSchema = z.string().url();
@@ -70,6 +49,44 @@ nextApp.prepare().then(async () => {
     // eslint-disable-next-line no-console
     console.log(`Server is running on port ${port}`);
   });
+
+  type PlayerId = string;
+  interface Player {
+    playerName: string;
+    x: number;
+    y: number;
+    imageId: number;
+    speed: number;
+    dir: 'up' | 'down' | 'left' | 'right';
+  }
+
+  interface Players {
+    [key: PlayerId]: Player;
+  }
+
+  const players: Players = {};
+
+  // Start Cnnection Handshake
+  io.on('connection', (socket: Socket) => {
+    socket.on('new player', (player) => {
+      console.log('test');
+      console.log(socket.id);
+      console.log(players);
+      players[player.playerName] = player;
+    });
+
+    // On movement, will update the player's position on the server
+
+    socket.on('movement', (id, data) => {
+      // const player = players[socket.id] || {};
+      players[socket.id] = ({ ...players[socket.id], ...data });
+    });
+  });
+
+  // Braodcast player state on setInterval
+  setInterval(() => {
+    io.sockets.emit('state', players);
+  }, 1000 / 60);
 });
 
 export default nextApp;

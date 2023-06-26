@@ -7,15 +7,15 @@ export default function Login() {
   const userName = useRef('');
   const customStyles = {
     overlay: {
-       backgroundColor: 'rgba(0, 0, 0, 0.6)'
+      backgroundColor: 'rgba(0, 0, 0, 0.6)'
     },
     content: {
-       top: '50%',
-       left: '50%',
-       right: 'auto',
-       bottom: 'auto',
-       marginRight: '-50%',
-       transform: 'translate(-50%, -50%)'
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)'
     }
   }
   return (
@@ -32,8 +32,8 @@ export default function Login() {
       </a>
       <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={customStyles}>
         <h1>Please enter a username</h1>
-        <input type="text" className="mt-4 border" ref={userName}/>
-        <br/>
+        <input type="text" className="mt-4 border" ref={userName} />
+        <br />
         <div className="ml-12 mt-6">
           <button onClick={() => {
             cookieCutter.set('playerName', userName.current.value);

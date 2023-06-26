@@ -1,98 +1,113 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, KeyboardEvent } from 'react';
 import cookieCutter from 'cookie-cutter';
-import { create } from 'zustand';
+import io from 'socket.io-client';
 import { drawPlayer } from '../utils/spriteLogic';
-import { WebSocket } from 'ws';
 
-export default function Game() {
+interface Player {
+  playerName: string;
+  x: number;
+  y: number;
+  imageId: number;
+  speed: number;
+  dir: 'up' | 'down' | 'left' | 'right';
+  currentFrame: number;
+}
 
-  const canvasRef = useRef(null);
 
-  const useGameStore = create((set) => ({}));
+export default function Game(): JSX.Element {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    // initialize canvas
     const canvas = canvasRef.current;
-    const context = canvas.getContext('2d');
+    const context = canvas?.getContext('2d');
 
-    // Drawing and game logic here
-    const player = {
-      playerName: cookieCutter.get('playerName'),
-      x: canvas.width / 10,
-      y: canvas.height / 10,
+    if (!canvas || !context) {
+      return;
+    }
+
+    const player: Player = {
+      playerName: cookieCutter.get('playerName') || '',
+      x: 0,
+      y: 0,
       imageId: 0,
       speed: 20,
-      dir: 'right'
+      dir: 'right',
+      currentFrame: 0
     };
 
-    const handleKeyDown = (event) => {
+    const socket = io();
+    socket.emit('new player', player);
+
+    setInterval(() => {
+      socket.emit('movement', player)
+    }, 1000 / 60);
+
+    function handleKeyDown(event: KeyboardEvent) {
       const { key } = event;
 
       if (key === 'ArrowUp' || key === 'w') {
         player.y -= player.speed;
         player.dir = 'up';
-        currentFrame++;
+        player.currentFrame++;
       } else if (key === 'ArrowDown' || key === 's') {
         player.y += player.speed;
         player.dir = 'down';
-        currentFrame++;
+        player.currentFrame++;
       } else if (key === 'ArrowLeft' || key === 'a') {
         player.x -= player.speed;
         player.dir = 'left';
-        currentFrame++;
+        player.currentFrame++;
       } else if (key === 'ArrowRight' || key === 'd') {
         player.x += player.speed;
         player.dir = 'right';
-        currentFrame++;
-      } else if (key === '1') {
-        player.imageId = 1
-      } else if(key === '2') {
-        player.imageId = 2
-      } else if(key === '3') {
-        player.imageId = 3
-      } else if(key === '4') {
-        player.imageId = 4
-      } else if(key === '5') {
-        player.imageId = 5
-      } else if(key === '6') {
-        player.imageId = 6
-      } else if(key === '7') {
-        player.imageId = 7
-      } else if(key === '8') {
-        player.imageId = 8
-      } else if(key === '9') {
-        player.imageId = 9
-      } else if(key === '0') {
-        player.imageId = 0
+        player.currentFrame++;
+      } else if (key >= '1' && key <= '9') {
+        player.imageId = Number(key);
+      } else if (key === '0') {
+        player.imageId = 0;
       }
     };
+
+    type PlayerId = string;
+    interface Players {
+      [key: PlayerId]: Player;
+    }
+
+    socket.on('state', (players: Players) => {
+      Object.keys(players).forEach((id) => {
+        const newPlayer = players[id]
+
+        drawPlayer(
+          context,
+          canvas,
+          newPlayer.imageId,
+          newPlayer.dir,
+          newPlayer.currentFrame,
+          newPlayer.x,
+          newPlayer.y,
+          50,
+          50
+        );
+      })
+    })
 
     window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', (event) => { currentFrame = 0 });
 
-    // game loop
-    // The sprite image frame starts from 0
-    let currentFrame = 0;
-    const gameLoop = setInterval(() => {
-      // Make the frames loop
-      if (currentFrame >= 4) {
-        currentFrame = 0;
-      }
-      
-      drawPlayer(context, canvas, player.imageId, player.dir, currentFrame, player.x, player.y, 50, 50);
-    }, 1000 / 60);
+    window.addEventListener('keyup', () => {
+      player.currentFrame = 0;
+    });
 
+    // eslint-disable-next-line consistent-return
     return () => {
-      // Clean up or remove event listeners if needed
       window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', () => {});
-      clearInterval(gameLoop);
+      window.removeEventListener('keyup', _ => _);
     };
+
   }, []);
 
   return (
     <div>
-      <canvas className="w-full h-full bg-white mt-[-25px]" ref={canvasRef} width={1000} height={800} />
+      <canvas className="w-full h-full bg-white mt-[-25px]" ref={canvasRef} width={1000} height={650} />
     </div>
   );
 }
