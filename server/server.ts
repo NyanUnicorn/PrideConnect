@@ -4,6 +4,8 @@ import Koa from "koa";
 import bodyParser from "koa-bodyparser";
 import pino from "pino";
 import { WebSocket, Server } from "ws";
+import url from "url";
+import { z } from "zod";
 
 import usersRoutes from "./routes/users.routes";
 import playersRoutes from "./routes/players.routes";
@@ -53,7 +55,10 @@ nextApp.prepare().then(async () => {
   });
 
   // Handle other requests using Next.js
+
+  const urlSchema = z.string().url();
   app.use(async (ctx: Koa.Context) => {
+    const parsedUrl = url.parse(urlSchema.parse(ctx.req.url), true);
     await handle(ctx.req, ctx.res, parsedUrl);
     ctx.respond = false;
   });
