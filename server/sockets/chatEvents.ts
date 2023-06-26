@@ -6,9 +6,6 @@ import * as Room from "../models/rooms.model";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as User from "../models/users.model";
 
-// Global Vars
-let roomClientsMap = new Map<string, Set<WebSocket>>();
-
 // Schema
 const messageSchema = z.object({
   id: z.string(),
@@ -35,18 +32,18 @@ const handleUserListRooms = async (ws: WebSocket) => {
   return rooms;
 };
 
-const handleListUsersInRoom = (ws: WebSocket, user: string, room: string) => {
+const handleListUsersInRoom = (ws: WebSocket, user: string, room: string, roomClientsMap: Map<string, Set<WebSocket>>) => {
   // Get list of users in room
   const users = Room.getRoomUsers(room);
   sendSocketMessage(ws, "listUsersInRoom", { room, users });
 };
 
 // handlers
-const handleUserJoinRoom = (ws: WebSocket, user: string, room: string) => {
+const handleUserJoinRoom = async (ws: WebSocket, user: string, room: string, roomClientsMap: Map<string, Set<WebSocket>>) => {
   // Add user to the room
-  Room.joinRoom(room, user);
+  await Room.joinRoom(room, user);
 
-  // If room does not exist, create it
+  // add to roomClientsMap
   if (!roomClientsMap.has(room)) {
     roomClientsMap.set(room, new Set());
   }
@@ -65,17 +62,17 @@ const handleUserJoinRoom = (ws: WebSocket, user: string, room: string) => {
   sendSocketMessage(ws, "joinRoom", { room, user });
 };
 
-const handleUserLeaveRoom = async (ws: WebSocket, user: string, room: string) => {
+const handleUserLeaveRoom = async (ws: WebSocket, user: string, room: string, roomClientsMap: Map<string, Set<WebSocket>>) => {
   // Remove user from the room
   roomClientsMap.get(room)?.delete(ws);
-  const status = await Room.leaveRoom(room, user);
-  return status;
+  await Room.leaveRoom(room, user);
 };
 
 const handleUserSendMessage = async (
   ws: WebSocket,
   user: string,
-  payload: { message: z.infer<typeof messageSchema>; room: string }
+  payload: { message: z.infer<typeof messageSchema>; room: string },
+  roomClientsMap: Map<string, Set<WebSocket>>
 ) => {
   // Send message to all users in the room
   roomClientsMap.get(payload.room)?.forEach((client) => {
@@ -85,21 +82,25 @@ const handleUserSendMessage = async (
   });
 };
 
-const handleUserConnection = async (ws: WebSocket, user: string) => {
+const handleUserConnection = async (ws: WebSocket, user: string, roomClientsMap: Map<string, Set<WebSocket>>) => {
   // Send a list of rooms to the user
   const rooms = await handleUserListRooms(ws);
-
-  // Join default room
-  await handleUserJoinRoom(ws, user, rooms[0].id);
 
   if (!roomClientsMap) {
     roomClientsMap = new Map();
   }
+
+  // Join room
+  await handleUserJoinRoom(ws, user, rooms[0].id, roomClientsMap);
 };
 
-// handle chat evenets
+// handle chat events
 
-const handleChatSocketEvents = async (logger: Logger, ws: WebSocket) => {
+const handleChatSocketEvents = async (
+  logger: Logger,
+  ws: WebSocket,
+  roomClientsMap: Map<string, Set<WebSocket>>
+) => {
   ws.on("message", async (data: string) => {
     const dataSchema = z.object({
       type: z.string(),
@@ -122,7 +123,7 @@ const handleChatSocketEvents = async (logger: Logger, ws: WebSocket) => {
     switch (parsedData.type) {
       case "connect":
         // Handle user connection
-        await handleUserConnection(ws, parsedData.payload.user as string);
+        await handleUserConnection(ws, parsedData.payload.user as string, roomClientsMap);
         break;
 
       case "joinRoom":
@@ -130,7 +131,8 @@ const handleChatSocketEvents = async (logger: Logger, ws: WebSocket) => {
         await handleUserJoinRoom(
           ws,
           parsedData.payload.user as string,
-          parsedData.payload.room as string
+          parsedData.payload.room as string,
+          roomClientsMap
         );
         break;
 
@@ -139,7 +141,8 @@ const handleChatSocketEvents = async (logger: Logger, ws: WebSocket) => {
         await handleUserLeaveRoom(
           ws,
           parsedData.payload.user as string,
-          parsedData.payload.room as string
+          parsedData.payload.room as string,
+          roomClientsMap
         );
         break;
 
@@ -148,10 +151,10 @@ const handleChatSocketEvents = async (logger: Logger, ws: WebSocket) => {
         if (!parsedData.payload.room || !parsedData.payload.message) {
           logger.error("Room or message missing from payload");
         }
-        await handleUserSendMessage(ws, parsedData.payload.user, {
+        await handleUserSendMessage(ws, parsedData.payload.user as string, {
           message: parsedData.payload.message!,
           room: parsedData.payload.room!,
-        });
+        }, roomClientsMap);
         break;
 
       case "listRooms":
@@ -164,7 +167,8 @@ const handleChatSocketEvents = async (logger: Logger, ws: WebSocket) => {
         await handleListUsersInRoom(
           ws,
           parsedData.payload.user as string,
-          parsedData.payload.room as string
+          parsedData.payload.room as string,
+          roomClientsMap
         );
         break;
 
