@@ -11,7 +11,7 @@
 // import roomsRoutes from "./routes/rooms.routes";
 
 const { createServer } = require('http');
-const parse = require('url');
+const { parse } = require('url');
 const nextServer = require('next');
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
