@@ -44,6 +44,9 @@ export const deleteUser = async (ctx: Context) => {
   const { id } = ctx.params;
   await User.deleteUser(id);
   ctx.status = 204;
+  ctx.body = {
+    message : `User ${id} deleted`
+  }
 };
 
 // GET /users/:id/messages - Retrieves all messages from a specific user

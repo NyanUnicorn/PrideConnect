@@ -4,6 +4,12 @@ env:
   es6: true
   browser: true
 parser: "@typescript-eslint/parser"
+parserOptions:
+  ecmaFeatures:
+    jsx: true
+  ecmaVersion: 2020
+  sourceType: module
+  project: ["tsconfig.json"]
 extends:
   - "next/core-web-vitals"
   - airbnb
@@ -11,14 +17,28 @@ extends:
   - plugin:@next/next/recommended
   - prettier
 overrides:
-  - files: "**/*.+(ts|tsx)"
+  - files: "**/*.+(js|jsx)"
+    env:
+      - jest: true
+      - node: true
+    plugins:
+      - jest
     parserOptions:
-      project: "./tsconfig.json"
-      tsconfigRootDir: "./"
+      ecmaVersion: es6
+      sourceType: module
+    parser: babel-eslint
+    extends:
+      - airbnb
+      - prettier
+      - plugin:jest/recommended
+    rules:
+      indent:
+        - error
+        - 2
   - files:
-    -  "server/**/*.+(ts|tsx)"
+    -  "**/*.+(ts|tsx)"
     parserOptions: 
-      project: "./tsconfig.server.json"
+      project: ["tsconfig.server.json"]
       tsconfigRootDir: "./server"
       
 rules:
