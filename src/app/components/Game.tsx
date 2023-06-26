@@ -1,18 +1,23 @@
 import { useEffect, useRef } from 'react';
+import cookieCutter from 'cookie-cutter';
 import { create } from 'zustand';
 import { drawPlayer } from '../utils/spriteLogic';
+import { WebSocket } from 'ws';
 
 export default function Game() {
+
   const canvasRef = useRef(null);
 
   const useGameStore = create((set) => ({}));
 
   useEffect(() => {
+    // initialize canvas
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
 
     // Drawing and game logic here
     const player = {
+      playerName: cookieCutter.get('playerName'),
       x: canvas.width / 10,
       y: canvas.height / 10,
       imageId: 0,
@@ -54,7 +59,7 @@ export default function Game() {
         currentFrame = 0;
       }
       
-      drawPlayer(context, canvas, 8, player.dir, currentFrame, player.x, player.y, 50, 50);
+      drawPlayer(context, canvas, player.imageId, player.dir, currentFrame, player.x, player.y, 50, 50);
     }, 1000 / 60);
 
     return () => {
