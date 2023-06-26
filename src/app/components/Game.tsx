@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { create } from 'zustand';
 import { drawPlayer } from '../util/spriteLogic';
 
 export default function Game() {
@@ -40,6 +41,7 @@ export default function Game() {
     };
 
     window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', (event) => { currentFrame = 0 });
 
     // game loop
     // The sprite image frame starts from 0
@@ -56,6 +58,7 @@ export default function Game() {
     return () => {
       // Clean up or remove event listeners if needed
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', () => {});
       clearInterval(gameLoop);
     };
   }, []);
