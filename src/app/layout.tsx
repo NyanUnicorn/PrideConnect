@@ -9,6 +9,7 @@ export const metadata = {
     "PrideConnect is a multiplayer chatroom/gameroom, designed and built to foster a sense of community and belonging for lgbtq individuals in tech!",
 };
 
+<<<<<<< HEAD
 export default function RootLayout({
   children,
 }: {
@@ -16,6 +17,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+=======
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang='en'>
+>>>>>>> dev
       <body className={inter.className}>{children}</body>
     </html>
   );
