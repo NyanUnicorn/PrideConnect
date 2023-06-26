@@ -11,6 +11,7 @@ router.post("/users", userController.createUser);
 router.put("/users/:id", userController.updateUser);
 router.delete("/users/:id", userController.deleteUser);
 router.get("/users/:id/messages", userController.getUserMessages);
+router.put("/users/:id/messages", userController.sendUserMessage);
 router.get("/users/:id/players", userController.getUserPlayers);
 
 export default router;

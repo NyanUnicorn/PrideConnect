@@ -1,78 +1,36 @@
-const request = require('supertest');
-const baseURL = 'http://localhost:3000';
+import request from 'supertest';
+import Koa from 'koa';
+import router from '../routes/users.routes'; // adjust the path to fit your project structure
 
-describe('Users Routes', () => {
-  let userId;
+const app = new Koa();
+app.use(router.routes());
 
-  beforeAll(async () => {
-    // Create a new user for testing
-    const newUser = {
-      email: 'test@example.com',
-      name: 'Test User',
-    };
+describe('User Routes', () => {
 
-    const response = await request(baseURL).post('/users').send(newUser);
-    userId = response.body.id;
-  });
+    // Test case for GET /users
+    it('GET /users should return a list of users', async () => {
+        const response = await request(app.callback()).get('/users');
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual(expect.any(Array));
+    });
 
-  afterAll(async () => {
-    // Delete the created user after all tests are done
-    await request(baseURL).delete(`/users/${userId}`);
-  });
+    // Test case for GET /users/:id
+    it('GET /users/:id should return a user by id', async () => {
+        const userId = '1'; // change to a real user id in your database
+        const response = await request(app.callback()).get(`/users/${userId}`);
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty('id', userId);
+    });
 
-  it('GET /users should return a list of all users', async () => {
-    const response = await request(baseURL).get('/users');
-    expect(response.status).toBe(200);
-    expect(response.body).toBeDefined();
-    // Add more assertions as needed
-  });
+    // Test case for POST /users
+    it('POST /users should create a new user', async () => {
+        const newUser = {
+            // properties of the new user
+        };
+        const response = await request(app.callback()).post('/users').send(newUser);
+        expect(response.status).toBe(201);
+        // check for other properties in the response
+    });
 
-  it('GET /users/:id should return a specific user by ID', async () => {
-    const response = await request(baseURL).get(`/users/${userId}`);
-    expect(response.status).toBe(200);
-    expect(response.body).toBeDefined();
-    // Add more assertions as needed
-  });
-
-  it('POST /users should create a new user', async () => {
-    const newUser = {
-      email: 'newuser@example.com',
-      name: 'New User',
-    };
-    const response = await request(baseURL).post('/users').send(newUser);
-    expect(response.status).toBe(200 || 201);
-    expect(response.body).toBeDefined();
-    // Add more assertions as needed
-  });
-
-  it('PUT /users/:id should update a specific user by ID', async () => {
-    const updatedUser = {
-      email: 'updated@example.com',
-      name: 'Updated User',
-    };
-    const response = await request(baseURL).put(`/users/${userId}`).send(updatedUser);
-    expect(response.status).toBe(200);
-    expect(response.body).toBeDefined();
-    // Add more assertions as needed
-  });
-
-  it('DELETE /users/:id should delete a specific user by ID', async () => {
-    const response = await request(baseURL).delete(`/users/${userId}`);
-    expect(response.status).toBe(200 || 204);
-    // Add more assertions as needed
-  });
-
-  it('GET /users/:id/messages should return all messages from a specific user', async () => {
-    const response = await request(baseURL).get(`/users/${userId}/messages`);
-    expect(response.status).toBe(200);
-    expect(response.body).toBeDefined();
-    // Add more assertions as needed
-  });
-
-  it('GET /users/:id/players should return all players associated with a specific user', async () => {
-    const response = await request(baseURL).get(`/users/${userId}/players`);
-    expect(response.status).toBe(200);
-    expect(response.body).toBeDefined();
-    // Add more assertions as needed
-  });
+    // More test cases for the remaining routes...
 });

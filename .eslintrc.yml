@@ -3,6 +3,7 @@ env:
   node: true
   es6: true
   browser: true
+parser: "@typescript-eslint/parser"
 extends:
   - "next/core-web-vitals"
   - airbnb
@@ -14,8 +15,15 @@ overrides:
     parserOptions:
       project: "./tsconfig.json"
       tsconfigRootDir: "./"
+  - files:
+    -  "server/**/*.+(ts|tsx)"
+    parserOptions: 
+      project: "./tsconfig.server.json"
+      tsconfigRootDir: "./server"
+      
 rules:
   no-html-link-for-pages: 0
   import/prefer-default-export: 0
   react/react-in-jsx-scope: 0
   react/destructuring-assignment: 0
+  no-plusplus: 0

@@ -31,15 +31,26 @@ export async function createRoom(ctx: Context) {
   ctx.body = newRoom;
 }
 
-// Update a specific room by ID
-export async function updateRoom(ctx: Context) {
-  const bodyScheam = z.object({
-    name: z.string().min(1).max(255),
+//  join a room
+export async function joinRoom(ctx: Context) {
+  const bodySchema = z.object({
+    userId: z.string().uuid(),
   });
   const { id } = ctx.params;
-  const { name } = bodyScheam.parse(ctx.request.body);
-  const updatedRoom = await Rooms.updateRoom(id, { name });
-  ctx.body = updatedRoom;
+  const { userId } = bodySchema.parse(ctx.request.body);
+  await Rooms.joinRoom(id, userId);
+  ctx.status = 204;
+}
+
+// leave a room
+export async function leaveRoom(ctx: Context) {
+  const bodySchema = z.object({
+    userId: z.string().uuid(),
+  });
+  const { id } = ctx.params;
+  const { userId } = bodySchema.parse(ctx.request.body);
+  await Rooms.leaveRoom(id, userId);
+  ctx.status = 204;
 }
 
 // Delete a specific room by ID

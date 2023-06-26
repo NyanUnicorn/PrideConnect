@@ -8,7 +8,7 @@
     "start": "next start",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint": "next lint",
-    "server": "nodemon --watch server server/server.js",
+    "server": "ts-node --project ./server/tsconfig.server.json ./server/server.ts",
     "test": "jest"
   },
   "dependencies": {
@@ -21,6 +21,7 @@
     "body-parser": "^1.20.2",
     "koa": "^2.14.2",
     "koa-bodyparser": "^4.4.1",
+    "koa-json": "^2.0.2",
     "koa-pino-logger": "^4.0.0",
     "koa-router": "^12.0.0",
     "msw": "^1.2.2",
@@ -53,6 +54,7 @@
     "@typescript-eslint/parser": "^5.60.0",
     "aws-cdk-lib": "2.84.0",
     "babel-jest": "^29.5.0",
+    "concurrently": "^8.2.0",
     "constructs": "10.1.156",
     "eslint": "^8.43.0",
     "eslint-config-airbnb": "^19.0.4",
@@ -70,6 +72,7 @@
     "prisma": "^4.16.1",
     "socket.io-client": "^4.7.0",
     "sst": "^2.16.3",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "ts-node": "^10.9.1"
   }
 }

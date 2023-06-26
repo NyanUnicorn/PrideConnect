@@ -46,7 +46,6 @@
   },
   "exclude": [
     "node_modules",
-    "**/*.spec.ts"
   ],
   "include": [
     "next-env.d.ts",
