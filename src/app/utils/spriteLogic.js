@@ -39,11 +39,26 @@ playerImage.src = "/sprites-sheet.png";
 const background = new Image();
 background.src = "/grass.png";
 
+const prejudice = new Image();
+prejudice.src = "/ghoul.png";
+
+const drawPrejudice = (context, currentFrame, x, y, dx, dy) => {
+  if(prejudice.complete) {
+    context.drawImage(prejudice, x, y, dx, dy);
+  }
+}
+
 const drawBackground = (context, canvas) => {
   if (background.complete) {
     context.drawImage(background, 0, 0, canvas.width, canvas.height);
   }
 };
+
+const drawPredjudice = (context, canvas, currentFrame, x, y, dx, dy) => {
+  if (prejudice.complete) {
+    context.drawImage(prejudice, x, y, dx, dy);
+  }
+}
 
 const drawPlayer = (context, canvas, playerImageId, dir, currentFrame, x, y, width, height) => {
   let horizontalOffset = 0;
@@ -83,4 +98,15 @@ const drawPlayer = (context, canvas, playerImageId, dir, currentFrame, x, y, wid
   );
 };
 
-export { drawBackground, drawPlayer };
+const drawTextAbovePlayer = (context, text, x, y, fontSize = '16px', fontFace = 'Arial', textColor = 'black') => {
+  context.fillStyle = "white";
+  context.strokeStyle = "black";
+  context.lineWidth = 2;
+  context.font = "24px Arial"; // Increase the pixel size to make the text bigger.
+  context.textAlign = "center";
+  context.fillText(text, x, y);
+  context.strokeText(text, x, y);
+};
+
+
+export { drawBackground, drawPlayer, drawTextAbovePlayer, drawPrejudice};
