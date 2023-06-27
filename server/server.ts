@@ -58,6 +58,7 @@ nextApp.prepare().then(async () => {
     imageId: number;
     speed: number;
     dir: 'up' | 'down' | 'left' | 'right';
+    currentFrame: number;
   }
 
   interface Players {
@@ -80,9 +81,11 @@ nextApp.prepare().then(async () => {
         // console.log(data.x);
         // console.log(data.y);
         // console.log(players);
-        console.log(players[socket.id]);
         players[socket.id].x = data.x;
         players[socket.id].y = data.y;
+        players[socket.id].currentFrame = data.currentFrame % 4;
+        players[socket.id].dir = data.dir;
+        players[socket.id].imageId = data.imageId;
       }
       // 
     });
