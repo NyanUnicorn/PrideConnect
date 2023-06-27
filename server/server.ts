@@ -69,17 +69,22 @@ nextApp.prepare().then(async () => {
   // Start Cnnection Handshake
   io.on('connection', (socket: Socket) => {
     socket.on('new player', (player) => {
-      console.log('test');
-      console.log(socket.id);
-      console.log(players);
-      players[player.playerName] = player;
+      players[socket.id] = player;
     });
 
     // On movement, will update the player's position on the server
 
-    socket.on('movement', (id, data) => {
-      // const player = players[socket.id] || {};
-      players[socket.id] = ({ ...players[socket.id], ...data });
+    socket.on('movement', (data) => {
+      // const player = players[data.playerName] || {};
+      if(data) {
+        // console.log(data.x);
+        // console.log(data.y);
+        // console.log(players);
+        console.log(players[socket.id]);
+        players[socket.id].x = data.x;
+        players[socket.id].y = data.y;
+      }
+      // 
     });
   });
 

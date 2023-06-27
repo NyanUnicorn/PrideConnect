@@ -47,8 +47,7 @@ const drawBackground = (context, canvas) => {
 }
 
 const drawPlayer = (context, canvas, playerImageId, dir, currentFrame, x, y, width, height) => {
-  context.clearRect(0, 0, canvas.width, canvas.height);
-  drawBackground(context, canvas);
+  
   let horizontalOffset = 0;
   let horizontalFrameOffset = 0;
   let verticalOffset = 0;
@@ -74,4 +73,4 @@ const drawPlayer = (context, canvas, playerImageId, dir, currentFrame, x, y, wid
   context.drawImage(playerImage, beginX + frameOffset * currentFrame + horizontalOffset + horizontalFrameOffset + playerImageIdOffsetX[playerImageId % 2], beginY + verticalFrameOffset + playerImageIdOffsetY[playerImageId], frameWidth, frameHeight, x, y, width, height); 
 };
 
-export { drawPlayer };
+export { drawBackground, drawPlayer };
