@@ -78,9 +78,7 @@ export default function Game(): JSX.Element {
       context.clearRect(0, 0, canvas.width, canvas.height);
       drawBackground(context, canvas);
       Object.keys(players).forEach((id) => {
-        const newPlayer = players[id]
-        // console.log(newPlayer);
-
+        const newPlayer = players[id];
         drawPlayer(
           context,
           canvas,
