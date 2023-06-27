@@ -40,7 +40,7 @@ const background = new Image();
 background.src = "/grass.png";
 
 const prejudice = new Image();
-prejudice.src = "/ghoul.png";
+prejudice.src = "/ghoul_360.png";
 
 const drawPrejudice = (context, currentFrame, x, y, dx, dy) => {
   if(prejudice.complete) {
@@ -54,7 +54,7 @@ const drawBackground = (context, canvas) => {
   }
 };
 
-const drawPredjudice = (context, canvas, currentFrame, x, y, dx, dy) => {
+const drawPredjudice = (context, currentFrame, x, y, dx, dy) => {
   if (prejudice.complete) {
     context.drawImage(prejudice, x, y, dx, dy);
   }
