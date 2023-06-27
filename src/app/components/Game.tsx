@@ -94,6 +94,7 @@ export default function Game(): JSX.Element {
     const drawPlayers = (players: Players) => {
       context.clearRect(0, 0, canvas.width, canvas.height);
       drawBackground(context, canvas);
+      drawPrejudice(context, 0, 325, 100, 350, 350);
       Object.values(players).forEach((newPlayer) => {
         drawPlayer(
           context,
