@@ -4,8 +4,7 @@ import Koa from "koa";
 import bodyParser from "koa-bodyparser";
 import url from "url";
 import { z } from "zod";
-
-import { Server, Socket } from "socket.io";
+import { Server } from "socket.io";
 import usersRoutes from "./routes/users.routes";
 import playersRoutes from "./routes/players.routes";
 import roomsRoutes from "./routes/rooms.routes";
@@ -16,40 +15,35 @@ const hostname = "localhost";
 const nextApp = nextServer({ dev, hostname, port });
 const handle = nextApp.getRequestHandler();
 
-// GLOBAL VARIABLES
 const app = new Koa();
+
 nextApp.prepare().then(async () => {
   const server = createServer(app.callback());
   const io = new Server(server);
 
   app.use(bodyParser());
 
-  // Register the users routes
+  // Register routes
   app.use(usersRoutes.routes());
   app.use(usersRoutes.allowedMethods());
-
-  // Register the players routes
   app.use(playersRoutes.routes());
   app.use(playersRoutes.allowedMethods());
-
-  // Register the rooms routes
   app.use(roomsRoutes.routes());
   app.use(roomsRoutes.allowedMethods());
 
   // Handle other requests using Next.js
-
   const urlSchema = z.string().url();
-  app.use(async (ctx: Koa.Context) => {
+  app.use(async (ctx) => {
     const parsedUrl = url.parse(urlSchema.parse(ctx.request.URL.href), true);
     await handle(ctx.req, ctx.res, parsedUrl);
     ctx.respond = false;
   });
 
   server.listen(port, () => {
-    // eslint-disable-next-line no-console
     console.log(`Server is running on port ${port}`);
   });
 
+  // Player types
   type PlayerId = string;
   interface Player {
     playerName: string;
@@ -57,43 +51,27 @@ nextApp.prepare().then(async () => {
     y: number;
     imageId: number;
     speed: number;
-    dir: 'up' | 'down' | 'left' | 'right';
+    dir: "up" | "down" | "left" | "right";
     currentFrame: number;
   }
 
-  interface Players {
-    [key: PlayerId]: Player;
-  }
+  // Players object
+  const players: Record<PlayerId, Player> = {};
 
-  const players: Players = {};
-
-  // Start Cnnection Handshake
-  io.on('connection', (socket: Socket) => {
-    socket.on('new player', (player) => {
+  // Connection handshake
+  io.on("connection", (socket) => {
+    socket.on("new player", (player) => {
       players[socket.id] = player;
     });
 
-    // On movement, will update the player's position on the server
-
-    socket.on('movement', (data) => {
-      // const player = players[data.playerName] || {};
-      if(data) {
-        // console.log(data.x);
-        // console.log(data.y);
-        // console.log(players);
-        players[socket.id].x = data.x;
-        players[socket.id].y = data.y;
-        players[socket.id].currentFrame = data.currentFrame % 4;
-        players[socket.id].dir = data.dir;
-        players[socket.id].imageId = data.imageId;
-      }
-      // 
+    socket.on("movement", (player: Player) => {
+      players[socket.id] = { ...players[socket.id], ...player };
     });
   });
 
-  // Braodcast player state on setInterval
+  // Broadcast player state on setInterval
   setInterval(() => {
-    io.sockets.emit('state', players);
+    io.sockets.emit("state", players);
   }, 1000 / 60);
 });
 
