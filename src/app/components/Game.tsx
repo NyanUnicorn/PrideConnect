@@ -8,6 +8,7 @@ import {
   drawTextAbovePlayer,
   drawPrejudice,
 } from "../utils/spriteLogic";
+import { P } from "pino";
 
 interface Player {
   playerName: string;
@@ -51,18 +52,30 @@ export default function Game(): JSX.Element {
         player.y -= player.speed;
         player.dir = "up";
         player.currentFrame++;
+        if(player.currentFrame >=4) {
+          player.currentFrame = 0;
+        }
       } else if (key === "ArrowDown") {
         player.y += player.speed;
         player.dir = "down";
         player.currentFrame++;
+        if(player.currentFrame >=4) {
+          player.currentFrame = 0;
+        }
       } else if (key === "ArrowLeft") {
         player.x -= player.speed;
         player.dir = "left";
         player.currentFrame++;
+        if(player.currentFrame >=4) {
+          player.currentFrame = 0;
+        }
       } else if (key === "ArrowRight") {
         player.x += player.speed;
         player.dir = "right";
         player.currentFrame++;
+        if(player.currentFrame >=4) {
+          player.currentFrame = 0;
+        }
       } else if (key >= "1" && key <= "9") {
         player.imageId = Number(key);
       } else if (key === "0") {
