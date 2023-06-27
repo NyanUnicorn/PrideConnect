@@ -1,31 +1,38 @@
-# Stage 1: Build the Next.js frontend
-FROM node:14-alpine as frontend
+# Define the build stage
+FROM node:20.3-alpine AS builder
 
+# Create app directory
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
+
+# Install app dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy app source
 COPY . .
+
+# Disable Next.js telemetry
+ENV NEXT_TELEMETRY_DISABLED 1
+
+# Build the Next.js application
 RUN npm run build
 
-# Stage 2: Build the Koa server backend
-FROM node:14-alpine as backend
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci --production
-COPY server.js ./
+# Define the run stage
+FROM node:20.3-alpine AS runner
 
-# Stage 3: Create the final image
-FROM node:14-alpine
-WORKDIR /app
+# Set the working directory
+WORKDIR /
 
-# Copy the built frontend files from the "frontend" stage
-COPY --from=frontend /app/.next ./.next
+# Install production dependencies
+COPY package*.json ./
+RUN npm ci --only=production
 
-# Copy the built backend files from the "backend" stage
-COPY --from=backend /app .
+# Copy built assets from the build stage
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
 
-# Expose the desired port (adjust if necessary)
+# Your app runs on port 3000
 EXPOSE 3000
 
-# Start the Koa server
-CMD ["node", "server.js"]
+# Command to start the app
+CMD [ "npm", "start" ]

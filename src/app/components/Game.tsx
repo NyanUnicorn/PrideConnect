@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, KeyboardEvent } from "react";
-import cookieCutter from "cookie-cutter";
 import { faker } from "@faker-js/faker";
 import io from "socket.io-client";
 import {
@@ -23,6 +22,7 @@ interface Player {
 export default function Game(): JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [message, setMessage] = useState("");
+  const [chatBubble, setChatBubble] = useState("");
 
   const player: Player = useRef({
     playerName: faker.internet.userName(),
@@ -114,12 +114,7 @@ export default function Game(): JSX.Element {
         );
 
         if (newPlayer.message) {
-          drawTextAbovePlayer(
-            context,
-            newPlayer.message,
-            newPlayer.x,
-            newPlayer.y - 30
-          );
+          drawTextAbovePlayer(context, chatBubble, newPlayer.x, newPlayer.y - 30);
         }
       });
     };
@@ -131,12 +126,21 @@ export default function Game(): JSX.Element {
     };
   }, [player.message]);
 
-  const handleSubmit = (event: any) => {
-    event.preventDefault();
-    player.message = message;
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setChatBubble(message);
     setMessage("");
   };
 
+  useEffect(() => {
+    if (chatBubble) {
+      const timer = setTimeout(() => {
+        setChatBubble("");
+      }, 10000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [chatBubble]);
   return (
     <div>
       <canvas
@@ -151,9 +155,10 @@ export default function Game(): JSX.Element {
           <input
             type='text'
             id='chatbox'
-            onChange={(e) => setMessage(e.target.value)}
             value={message}
+            onChange={(e) => setMessage(e.target.value)}
           />
+
           <button type='submit'>Send</button>
         </form>
       </div>
