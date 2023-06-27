@@ -1,7 +1,7 @@
 import { useEffect, useRef, KeyboardEvent } from 'react';
 import cookieCutter from 'cookie-cutter';
 import io from 'socket.io-client';
-import { drawBackground, drawPlayer } from '../utils/spriteLogic';
+import { drawBackground, drawPlayer, drawPrejudice } from '../utils/spriteLogic';
 
 interface Player {
   playerName: string;
@@ -72,11 +72,14 @@ export default function Game(): JSX.Element {
     interface Players {
       [key: PlayerId]: Player;
     }
-
+    let prejudiceFrame = 0;
     socket.on('state', (players: Players) => {
       // drawPlayers(context, canvas, players);
       context.clearRect(0, 0, canvas.width, canvas.height);
       drawBackground(context, canvas);
+      drawPrejudice(context, prejudiceFrame, 325, 100, 350, 350);
+      // prejudiceFrame++;
+      // prejudiceFrame %= 4;
       Object.keys(players).forEach((id) => {
         const newPlayer = players[id];
         drawPlayer(

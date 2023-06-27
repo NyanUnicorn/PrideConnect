@@ -40,9 +40,32 @@ playerImage.src = "/sprites-sheet.png";
 const background = new Image();
 background.src = "/grass.png";
 
+const prejudice = new Image();
+prejudice.src = "/ghoul.png";
+
 const drawBackground = (context, canvas) => {
   if(background.complete) { // Ensure the image has been loaded
     context.drawImage(background, 0, 0, canvas.width, canvas.height);
+  }
+}
+
+const drawPrejudice = (context, currentFrame, x, y, dx, dy) => {
+  if(prejudice.complete) {
+    context.drawImage(prejudice, x, y, dx, dy);
+    // switch(currentFrame) {
+    //   case 0:
+    //     context.drawImage(prejudice, x, y, 0, 0, 20, 20, dx, dy);
+    //     break;
+    //   case 1:
+    //     context.drawImage(prejudice, x, y, 20, 20, 20, 20, dx, dy);
+    //     break;
+    //   case 2:
+    //     context.drawImage(prejudice, x, y, 30, 30, 30, 30, dx, dy);
+    //     break;
+    //   case 3:
+    //     context.drawImage(prejudice, x, y, 40, 40, 40, 40, dx, dy);
+    //     break;
+    // }
   }
 }
 
@@ -73,4 +96,4 @@ const drawPlayer = (context, canvas, playerImageId, dir, currentFrame, x, y, wid
   context.drawImage(playerImage, beginX + frameOffset * currentFrame + horizontalOffset + horizontalFrameOffset + playerImageIdOffsetX[playerImageId % 2], beginY + verticalFrameOffset + playerImageIdOffsetY[playerImageId], frameWidth, frameHeight, x, y, width, height); 
 };
 
-export { drawBackground, drawPlayer };
+export { drawBackground, drawPlayer, drawPrejudice };
