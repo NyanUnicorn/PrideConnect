@@ -25,3 +25,36 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.random-color:hover {
+  animation: random-color 1s infinite;
+}
+
+@keyframes random-color {
+  0% {
+    color: #f00;
+  }
+  25% {
+    color: #0f0;
+  }
+  50% {
+    color: #00f;
+  }
+  75% {
+    color: #ff0;
+  }
+  100% {
+    color: #f0f;
+  }
+}
+
+.nav-link:hover {
+  transition: all 0.2s ease-in-out;
+  transform: translateY(-2px);
+}
+
+.btn-pressed:hover {
+  transition: all 0.2s ease-in-out;
+  transform: translateY(2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}

@@ -1,18 +1,19 @@
 import Link from "next/link";
 
 type NavItemProps = {
-  text: string;
   href: string;
+  label: string;
   active?: boolean;
 };
 
-function NavItem({ text, href, active }: NavItemProps) {
+function NavItem({ href, label, active }: NavItemProps) {
+  const activeClassName = active ? "bg-gray-900 text-white" : "";
   return (
-    <Link href={href}>
-      <a className={`nav__item ${active ? "active" : ""}`} href='/'>
-        {" "}
-        {text}
-      </a>
+    <Link
+      href={href}
+      className={`text-gray-800 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium cursor-pointer ${activeClassName}`}
+    >
+      {label}
     </Link>
   );
 }

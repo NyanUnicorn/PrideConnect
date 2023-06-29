@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, KeyboardEvent } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { faker } from "@faker-js/faker";
 import io from "socket.io-client";
 import {
@@ -7,17 +7,6 @@ import {
   drawTextAbovePlayer,
   drawPrejudice,
 } from "../utils/spriteLogic";
-
-interface Player {
-  playerName: string;
-  x: number;
-  y: number;
-  imageId: number;
-  speed: number;
-  dir: "up" | "down" | "left" | "right";
-  currentFrame: number;
-  message: string;
-}
 
 export default function Game(): JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -30,7 +19,7 @@ export default function Game(): JSX.Element {
     y: 0,
     imageId: 0,
     speed: 20,
-    dir: "right",
+    dir: Direction.Down,
     currentFrame: 0,
     message: "",
   }).current;
@@ -38,49 +27,54 @@ export default function Game(): JSX.Element {
   const socket = useRef(io()).current;
 
   useEffect(() => {
-    socket.emit("new player", player);
-
-    const interval = setInterval(() => {
-      socket.emit("movement", player);
-    }, 1000 / 60);
-
-    function handleKeyDown(event: KeyboardEvent) {
+    function handleKeyDown(event: KeyboardEvent): void {
       const { key } = event;
 
-      if (key === "ArrowUp") {
-        player.y -= player.speed;
-        player.dir = "up";
-        player.currentFrame++;
-      } else if (key === "ArrowDown") {
-        player.y += player.speed;
-        player.dir = "down";
-        player.currentFrame++;
-      } else if (key === "ArrowLeft") {
-        player.x -= player.speed;
-        player.dir = "left";
-        player.currentFrame++;
-      } else if (key === "ArrowRight") {
-        player.x += player.speed;
-        player.dir = "right";
-        player.currentFrame++;
-      } else if (key >= "1" && key <= "9") {
-        player.imageId = Number(key);
-      } else if (key === "0") {
-        player.imageId = 0;
+      switch (key) {
+        case "ArrowUp":
+          player.y -= player.speed;
+          player.dir = Direction.Up;
+          player.currentFrame++;
+          break;
+        case "ArrowDown":
+          player.y += player.speed;
+          player.dir = Direction.Down;
+          player.currentFrame++;
+          break;
+        case "ArrowLeft":
+          player.x -= player.speed;
+          player.dir = Direction.Left;
+          player.currentFrame++;
+          break;
+        case "ArrowRight":
+          player.x += player.speed;
+          player.dir = Direction.Right;
+          player.currentFrame++;
+          break;
+        case "0":
+          player.imageId = 0;
+          break;
+        default:
+          if (key >= "1" && key <= "9") {
+            player.imageId = Number(key);
+          }
+          break;
       }
-    }
 
+      socket.emit("movement", player);
+    }
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", () => {
       player.currentFrame = 0;
     });
 
     return () => {
-      clearInterval(interval);
       window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", () => {});
+      window.removeEventListener("keyup", () => {
+        player.currentFrame = 0;
+      });
     };
-  }, []);
+  }, [player, socket]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "sst bind next dev",
+    "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "NODE_ENV=production node server/server.js",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint": "next lint",
     "server": "ts-node --project ./server/tsconfig.server.json ./server/server.ts",
@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "^8.0.2",
+    "@heroicons/react": "^2.0.18",
     "@koa/bodyparser": "^5.0.0",
     "@prisma/client": "^4.16.1",
     "@types/pino": "^7.0.5",

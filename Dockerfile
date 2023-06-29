@@ -5,7 +5,7 @@ FROM node:20.3-alpine AS builder
 WORKDIR /app
 
 # Install app dependencies
-COPY package*.json ./
+COPY package*.json yarn.lock ./
 RUN npm install
 
 # Copy app source
