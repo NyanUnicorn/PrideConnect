@@ -1,0 +1,50 @@
+version: 0.1
+cli:
+  version: 1.11.1
+plugins:
+  sources:
+    - id: trunk
+      ref: v0.0.21
+      uri: https://github.com/trunk-io/plugins
+repo:
+  trunk_branch: dev
+lint:
+  default_max_file_size: 1048576
+  enabled:
+    - actionlint@1.6.25
+    - checkov@2.3.309
+    - git-diff-check
+    - hadolint@2.12.0
+    - markdownlint@0.35.0
+    - osv-scanner@1.3.4
+    - oxipng@8.0.0
+    - svgo@3.0.2
+    - terrascan@1.18.1
+    - trivy@0.42.1
+    - trufflehog@3.42.0
+    - yamllint@1.32.0
+  ignore:
+    - linters: [ALL]
+      paths:
+        - .git
+        - .github
+        - .trunk
+        - .vscode
+        - .eslint*
+        - "*.config.js"
+        - "yarn*"
+        - "package*"
+        - node_modules
+        - archive
+        - "@types"
+runtimes:
+  enabled:
+    - node@18.12.1
+    - python@3.10.8
+actions:
+  disabled:
+    - trunk-check-pre-push
+    - trunk-fmt-pre-commit
+  enabled:
+    - trunk-announce
+    - trunk-upgrade-available

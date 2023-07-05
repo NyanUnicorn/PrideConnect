@@ -1,12 +1,14 @@
 import Link from "next/link";
 
-type NavItemProps = {
+function NavItem({
+  href,
+  label,
+  active,
+}: {
   href: string;
   label: string;
-  active?: boolean;
-};
-
-function NavItem({ href, label, active }: NavItemProps) {
+  active: boolean;
+}) {
   const activeClassName = active ? "bg-gray-900 text-white" : "";
   return (
     <Link
@@ -17,9 +19,5 @@ function NavItem({ href, label, active }: NavItemProps) {
     </Link>
   );
 }
-
-NavItem.defaultProps = {
-  active: false,
-};
 
 export default NavItem;

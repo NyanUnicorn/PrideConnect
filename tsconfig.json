@@ -1,19 +1,16 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "allowJs": true,
     "allowImportingTsExtensions": true,
+    "baseUrl": ".",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "incremental": true,
-    "isolatedModules": true,
     "jsx": "preserve",
     "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
     ],
-    "module": "esnext",
+    "module": "CommonJS",
     "moduleResolution": "node",
     "noEmit": true,
     "noImplicitAny": true,
@@ -21,39 +18,38 @@
       "@/*": [
         "src/app/*",
         "src/pages/*",
-        "server/*"
+        "server/*",
+        "public/*"
+      ],
+      "*": [
+        "node_modules/*",
+        "./*"
       ]
     },
+    "isolatedModules": true,
+    "typeRoots": [
+      "./@types"
+    ],
     "plugins": [
       {
         "name": "next"
       }
     ],
-    "typeRoots": [
-      "node_modules/@types",
-      "@types"
-    ],
-    "types": [
-      "node",
-      "react",
-      "react-dom"
-    ],
     "resolveJsonModule": true,
-    "removeComments": true,
-    "skipLibCheck": true,
-    "sourceMap": true,
     "strict": true,
-    "target": "es5"
+    "target": "ESNext",
+    "allowJs": true,
+    "skipLibCheck": true,
+    "incremental": true
   },
   "exclude": [
     "node_modules"
   ],
   "include": [
-    "next-env.d.ts",
-    "**/*/*.ts",
-    "**/*/*.tsx",
     ".next/types/**/*.ts",
-    "__tests__/**/*",
-    "__tests__/users.routes.test.js"
+    "@types/**/*.d.ts",
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
   ]
 }

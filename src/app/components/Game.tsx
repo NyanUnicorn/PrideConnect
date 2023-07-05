@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect, useRef } from "react";
 import { faker } from "@faker-js/faker";
 import io from "socket.io-client";
@@ -19,7 +21,7 @@ export default function Game(): JSX.Element {
     y: 0,
     imageId: 0,
     speed: 20,
-    dir: Direction.Down,
+    dir: Direction.Up,
     currentFrame: 0,
     message: "",
   }).current;
@@ -119,7 +121,7 @@ export default function Game(): JSX.Element {
     return () => {
       socket.off("state", drawPlayers);
     };
-  }, [player.message]);
+  }, [player.message, chatBubble, socket]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

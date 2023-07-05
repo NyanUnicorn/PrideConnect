@@ -19,6 +19,8 @@ RUN npm run build
 
 # Define the run stage
 FROM node:20.3-alpine AS runner
+USER daemon
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "executable" ]
 
 # Set the working directory
 WORKDIR /

@@ -1,3 +1,15 @@
+// {
+//   "typescript.tsserver.log": "verbose",
+//   "typescript.tsserver.watchOptions": {
+//     "fallbackPolling": "dynamicPriorityPolling",
+//     "synchronousWatchDirectory": true,
+//   },
+//   "typescript.tsserver.maxTsServerMemory": 6072,
+//   "vsintellicode.typescript.completionsEnabled": true,
+//   "typescript.tsdk": "node_modules/typescript/lib",
+// }
 {
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "intellicodeApiExamples.typescript.enabled": false,
+  "npm.packageManager": "yarn",
+  "npm.exclude": "**/node_modules/**",
 }

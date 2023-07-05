@@ -1,3 +1,5 @@
+import * as path from "path";
+
 const frameWidth = 96;
 const frameHeight = 97;
 const beginX = 135;
@@ -33,20 +35,11 @@ const playerLeftOffsetY = [
   [0, 0, 0, 0],
 ];
 
-const playerImage = new Image();
-playerImage.src = "/sprites-sheet.png";
-
-const background = new Image();
-background.src = "/grass.png";
-
-const prejudice = new Image();
-prejudice.src = "/ghoul_360.png";
-
 const drawPrejudice = (context, currentFrame, x, y, dx, dy) => {
-  if(prejudice.complete) {
+  if (prejudice.complete) {
     context.drawImage(prejudice, x, y, dx, dy);
   }
-}
+};
 
 const drawBackground = (context, canvas) => {
   if (background.complete) {
@@ -54,13 +47,17 @@ const drawBackground = (context, canvas) => {
   }
 };
 
-const drawPredjudice = (context, currentFrame, x, y, dx, dy) => {
-  if (prejudice.complete) {
-    context.drawImage(prejudice, x, y, dx, dy);
-  }
-}
-
-const drawPlayer = (context, canvas, playerImageId, dir, currentFrame, x, y, width, height) => {
+const drawPlayer: DrawPlayer = (
+  context,
+  canvas,
+  playerImageId,
+  dir,
+  currentFrame,
+  x,
+  y,
+  width,
+  height
+) => {
   let horizontalOffset = 0;
   let horizontalFrameOffset = 0;
   let verticalFrameOffset = 0;
@@ -78,6 +75,9 @@ const drawPlayer = (context, canvas, playerImageId, dir, currentFrame, x, y, wid
     case "down":
       horizontalOffset = 277;
       break;
+    default:
+      throw Error(`Unknown direction ${dir} passed to drawPlayer`);
+      return;
   }
 
   if (dir === "left") {
@@ -85,9 +85,22 @@ const drawPlayer = (context, canvas, playerImageId, dir, currentFrame, x, y, wid
     verticalFrameOffset = playerLeftOffsetY[playerImageId][currentFrame];
   }
 
+  const playerImage = new Image();
+  playerImage.src = path.resolve(__dirname, "../../../public/sprites-sheet.png");
+
+  const background = new Image();
+  background.src = path.resolve(__dirname, "../../../public/grass.png");
+
+  const prejudice = new Image();
+  prejudice.src = path.resolve(__dirname, "../../../public/ghoul-360.png");
+
   context.drawImage(
     playerImage,
-    beginX + frameOffset * currentFrame + horizontalOffset + horizontalFrameOffset + playerImageIdOffsetX[playerImageId % 2],
+    beginX +
+      frameOffset * currentFrame +
+      horizontalOffset +
+      horizontalFrameOffset +
+      playerImageIdOffsetX[playerImageId % 2],
     beginY + verticalFrameOffset + playerImageIdOffsetY[playerImageId],
     frameWidth,
     frameHeight,
@@ -98,15 +111,22 @@ const drawPlayer = (context, canvas, playerImageId, dir, currentFrame, x, y, wid
   );
 };
 
-const drawTextAbovePlayer = (context, text, x, y, fontSize = '16px', fontFace = 'Arial', textColor = 'black') => {
-  context.fillStyle = "white";
+const drawTextAbovePlayer: DrawTextAbovePlayer = (
+  context,
+  text,
+  x,
+  y,
+  fontSize = "16px",
+  fontFace = "Arial",
+  fontColor = "black"
+) => {
+  context.fillStyle = fontColor;
   context.strokeStyle = "black";
   context.lineWidth = 2;
-  context.font = "24px Arial"; // Increase the pixel size to make the text bigger.
+  context.font = `${fontSize} ${fontFace}`; // Increase the pixel size to make the text bigger.
   context.textAlign = "center";
-  context.fillText(text, x, y);
+  context.context.fillText(text, x, y);
   context.strokeText(text, x, y);
 };
 
-
-export { drawBackground, drawPlayer, drawTextAbovePlayer, drawPrejudice};
+export { drawBackground, drawPlayer, drawTextAbovePlayer, drawPrejudice };

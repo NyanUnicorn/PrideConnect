@@ -1,71 +1,44 @@
 {
-  "root": true,
   "env": {
-    "node": true,
+    "browser": true,
     "es6": true,
-    "browser": true
-  },
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
-    "ecmaVersion": 2020,
-    "sourceType": "module",
-    "project": [
-      "./tsconfig.json"
-    ]
+    "node": true
   },
   "extends": [
     "next/core-web-vitals",
     "airbnb",
     "airbnb-typescript",
+    "plugin:@typescript-eslint/recommended",
     "plugin:@next/next/recommended",
     "prettier"
   ],
-  "overrides": [
-    {
-      "files": "**/*.+(js|jsx)",
-      "env": {
-        "jest": true,
-        "node": true
-      },
-      "plugins": [
-        "jest"
-      ],
-      "parserOptions": {
-        "ecmaVersion": 2015,
-        "sourceType": "module"
-      },
-      "parser": "babel-eslint",
-      "extends": [
-        "airbnb",
-        "prettier",
-        "plugin:jest/recommended"
-      ],
-      "rules": {
-        "indent": [
-          "error",
-          2
-        ]
-      }
-    },
-    {
-      "files": "**/*.+(ts|tsx)",
-      "parserOptions": {
-        "project": [
-          "./tsconfig.json"
-        ],
-        "tsconfigRootDir": "./"
-      }
-    }
+  "ignorePatterns": [
+    ".eslintrc.js",
+    "next-env.d.ts",
+    "next.config.js",
+    "node_modules/"
   ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "project": [
+      "tsconfig.json"
+    ],
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "root": true,
   "rules": {
-    "no-html-link-for-pages": 0,
+    "arrow-body-style": 0,
+    "consistent-return": 0,
     "import/prefer-default-export": 0,
-    "react/react-in-jsx-scope": 0,
-    "react/destructuring-assignment": 0,
+    "no-html-link-for-pages": 0,
     "no-plusplus": 0,
-    "arrow-body-style": 0
+    "react/destructuring-assignment": 0,
+    "react/react-in-jsx-scope": 0
   }
 }

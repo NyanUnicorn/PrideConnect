@@ -48,7 +48,7 @@ export async function getUserByEmail(email: string) {
   throw new Error("User not found");
 }
 
-export async function createUser(email: string, name: string | undefined) {
+export async function createUser(email: string, name: string) {
   return User.create({
     data: {
       name,
